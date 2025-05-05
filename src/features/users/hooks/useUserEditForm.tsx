@@ -11,9 +11,9 @@ const useUserEditForm = (userId: string, isOpen: boolean, onClose: () => void) =
     updateUser,
     currentUser,
     isLoading,
-    error,
+    formError,
     fieldErrors,
-    clearError,
+    clearFormError,
   } = useUsersStore();
 
   // Estado para los datos del formulario
@@ -51,9 +51,9 @@ const useUserEditForm = (userId: string, isOpen: boolean, onClose: () => void) =
   // Limpiar errores al cerrar el modal
   useEffect(() => {
     if (!isOpen) {
-      clearError();
+      clearFormError();
     }
-  }, [isOpen, clearError]);
+  }, [isOpen, clearFormError]);
 
   // Manejar cambios en los inputs del formulario
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +111,7 @@ const useUserEditForm = (userId: string, isOpen: boolean, onClose: () => void) =
   return {
     formData,
     isLoading,
-    error,
+    error: formError,
     fieldErrors,
     availableRoles,
     handleInputChange,

@@ -21,6 +21,7 @@ interface UsersState {
   };
   isLoading: boolean;
   error: string | null;
+  formError: string | null;  // Error específico para formularios
   fieldErrors: Record<string, string> | null;
   searchTerm: string;
 
@@ -33,6 +34,7 @@ interface UsersState {
   updateUser: (id: string, data: UserUpdateData) => Promise<void>;
   deleteUser: (id: string) => Promise<void>;
   clearError: () => void;
+  clearFormError: () => void;  // Nueva acción para limpiar errores de formulario
 }
 
 /**
@@ -51,13 +53,14 @@ const useUsersStore = create<UsersState>()(
     },
     isLoading: false,
     error: null,
+    formError: null,
     fieldErrors: null,
     searchTerm: "",
 
     // Acción: Obtener usuarios con paginación
     fetchUsers: async (page = 1, limit = 10) => {
       try {
-        set({ isLoading: true, error: null, fieldErrors: null });
+        set({ isLoading: true, error: null });  // Solo limpiamos el error general, no el de formulario
 
         const response: PaginatedResponse<UserProfile> =
           await userService.getUsers(page, limit);
@@ -79,7 +82,6 @@ const useUsersStore = create<UsersState>()(
             error instanceof Error
               ? error.message
               : "Error al obtener usuarios",
-          fieldErrors: null,
         });
       }
     },
@@ -180,7 +182,7 @@ const useUsersStore = create<UsersState>()(
     // Acción: Crear nuevo usuario
     createUser: async (data: CreateUserData) => {
       try {
-        set({ isLoading: true, error: null, fieldErrors: null });
+        set({ isLoading: true, formError: null, fieldErrors: null });  // Usar formError en lugar de error
 
         const newUser = await userService.createUser(data);
 
@@ -193,15 +195,16 @@ const useUsersStore = create<UsersState>()(
         if (error instanceof ValidationError) {
           set({
             isLoading: false,
-            error: error.message,
+            formError: error.message,
             fieldErrors: error.fieldErrors || null,
           });
         } else {
           set({
             isLoading: false,
-            error:
-              error instanceof Error ? error.message : "Error al crear usuario",
-            fieldErrors: null,
+            formError:
+              error instanceof Error
+                ? error.message
+                : "Error al crear usuario",
           });
         }
         throw error;
@@ -211,7 +214,7 @@ const useUsersStore = create<UsersState>()(
     // Acción: Actualizar usuario
     updateUser: async (id: string, data: UserUpdateData) => {
       try {
-        set({ isLoading: true, error: null, fieldErrors: null });
+        set({ isLoading: true, formError: null, fieldErrors: null });  // Usar formError en lugar de error
 
         const updatedUser = await userService.updateUser(id, data);
 
@@ -230,19 +233,19 @@ const useUsersStore = create<UsersState>()(
         if (error instanceof ValidationError) {
           set({
             isLoading: false,
-            error: error.message,
+            formError: error.message,
             fieldErrors: error.fieldErrors || null,
           });
         } else {
           set({
             isLoading: false,
-            error:
+            formError:
               error instanceof Error
                 ? error.message
                 : "Error al actualizar usuario",
-            fieldErrors: null,
           });
         }
+        throw error;
       }
     },
 
@@ -277,7 +280,10 @@ const useUsersStore = create<UsersState>()(
     },
 
     // Acción: Limpiar errores
-    clearError: () => set({ error: null, fieldErrors: null }),
+    clearError: () => set({ error: null }),
+
+    // Acción: Limpiar errores de formulario
+    clearFormError: () => set({ formError: null, fieldErrors: null }),
   }))
 );
 

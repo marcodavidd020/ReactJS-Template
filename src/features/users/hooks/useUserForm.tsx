@@ -28,7 +28,7 @@ export const useUserForm = (type: FormType, initialData?: UserProfile) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Obtener funciones del store
-  const { createUser, updateUser, isLoading, error, fieldErrors, clearError } =
+  const { createUser, updateUser, isLoading, formError, fieldErrors, clearFormError } =
     useUsersStore();
 
   // Cargar datos iniciales si los hay
@@ -46,6 +46,13 @@ export const useUserForm = (type: FormType, initialData?: UserProfile) => {
       }
     }
   }, [type, initialData]);
+
+  // Limpiar errores al cerrar
+  useEffect(() => {
+    return () => {
+      clearFormError();
+    };
+  }, [clearFormError]);
 
   // Manejar cambios en los inputs del formulario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,9 +98,9 @@ export const useUserForm = (type: FormType, initialData?: UserProfile) => {
     selectedRoles,
     isSubmitting,
     isLoading,
-    error,
+    error: formError,
     fieldErrors,
-    clearError,
+    clearError: clearFormError,
     handleChange,
     handleRolesChange,
     handleSubmit,
