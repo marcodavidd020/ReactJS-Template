@@ -24,7 +24,7 @@ const UsersPage: React.FC = () => {
   const [userToDelete, setUserToDelete] = useState<UserProfile | null>(null);
 
   // Obtener el estado de usuarios
-  const { users, pagination, isLoading, error, fetchUsers, deleteUser } =
+  const { users, pagination, isLoading, error, fetchUsers, searchUsers, deleteUser } =
     useUsersStore();
 
   // Cargar usuarios al montar el componente
@@ -64,10 +64,7 @@ const UsersPage: React.FC = () => {
   };
 
   const handleSearch = (term: string) => {
-    // En una implementación real, se pasaría el término `term` a la API
-    // para buscar usuarios por nombre, email, etc.
-    console.log(`Búsqueda con término: ${term}`); // Usar term para evitar el error
-    fetchUsers(1, pagination.limit);
+    searchUsers(term, 1, pagination.limit);
   };
 
   const handlePageChange = (page: number) => {

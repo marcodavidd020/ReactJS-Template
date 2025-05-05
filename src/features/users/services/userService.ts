@@ -22,6 +22,11 @@ export interface IUserService {
     page?: number,
     limit?: number
   ): Promise<PaginatedResponse<UserProfile>>;
+  searchUsers(
+    term: string,
+    page?: number,
+    limit?: number
+  ): Promise<PaginatedResponse<UserProfile>>;
   createUser(data: CreateUserData): Promise<UserProfile>;
   updateUser(id: string, data: UserUpdateData): Promise<UserProfile>;
   deleteUser(id: string): Promise<void>;
@@ -72,6 +77,24 @@ export const userService = {
       throw handleError(error, {
         context: "userService.getUsers",
         userMessage: "Error al obtener la lista de usuarios.",
+      });
+    }
+  },
+
+  /**
+   * Buscar usuarios por término
+   */
+  searchUsers: async (
+    term: string,
+    page = 1,
+    limit = 10
+  ): Promise<PaginatedResponse<UserProfile>> => {
+    try {
+      return await userRepository.searchUsers(term, page, limit);
+    } catch (error) {
+      throw handleError(error, {
+        context: "userService.searchUsers",
+        userMessage: "Error al buscar usuarios.",
       });
     }
   },

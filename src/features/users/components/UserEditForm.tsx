@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Modal, { ModalFooter } from "../../../common/components/Modal";
 import Input from "../../../common/components/Input";
 import Form, { FormField } from "../../../common/components/Form";
-import useUsersStore from "../store/usersStore";
-import { UserUpdateData } from "../types/userTypes";
+import useUserEditForm from "../hooks/useUserEditForm";
 
 interface UserEditFormProps {
   userId: string;
@@ -19,102 +18,17 @@ const UserEditForm: React.FC<UserEditFormProps> = ({
   isOpen,
   onClose,
 }) => {
+  // Usar el hook personalizado para manejar toda la lógica
   const {
-    fetchUserById,
-    updateUser,
-    currentUser,
+    formData,
     isLoading,
     error,
     fieldErrors,
-    clearError,
-  } = useUsersStore();
-
-  const [formData, setFormData] = useState<UserUpdateData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    isActive: true,
-    roles: [],
-  });
-
-  // Cargar datos del usuario al abrir el modal
-  useEffect(() => {
-    if (isOpen && userId) {
-      fetchUserById(userId);
-    }
-  }, [isOpen, userId, fetchUserById]);
-
-  // Actualizar el formulario cuando se carga el usuario
-  useEffect(() => {
-    if (currentUser) {
-      setFormData({
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
-        email: currentUser.email,
-        isActive: currentUser.isActive,
-        roles: [...currentUser.roles],
-      });
-    }
-  }, [currentUser]);
-
-  // Limpiar errores al cerrar el modal
-  useEffect(() => {
-    if (!isOpen) {
-      clearError();
-    }
-  }, [isOpen, clearError]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-
-    // Para inputs checkbox, usar el valor de checked
-    if (type === "checkbox") {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: checked,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
-
-  const handleRoleToggle = (role: string) => {
-    setFormData((prev) => {
-      const roles = [...(prev.roles || [])];
-      const index = roles.indexOf(role);
-
-      if (index === -1) {
-        roles.push(role);
-      } else {
-        roles.splice(index, 1);
-      }
-
-      return {
-        ...prev,
-        roles,
-      };
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!userId) return;
-
-    try {
-      await updateUser(userId, formData);
-      onClose();
-    } catch (error) {
-      // Error ya manejado por el store
-      console.error("Error al actualizar usuario:", error);
-    }
-  };
-
-  // Lista de roles disponibles
-  const availableRoles = ["admin", "user", "editor"];
+    availableRoles,
+    handleInputChange,
+    handleRoleToggle,
+    handleSubmit,
+  } = useUserEditForm(userId, isOpen, onClose);
 
   return (
     <Modal

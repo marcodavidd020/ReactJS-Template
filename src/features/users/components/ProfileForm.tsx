@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "../../../common/components/Button";
 import Input from "../../../common/components/Input";
-import FormField from "../../../common/components/FormField";
+import { FormField } from "../../../common/components/Form";
 import { UpdateProfileRequest } from "../types/userTypes";
 import useProfileForm from "../hooks/useProfileForm";
 
@@ -37,7 +37,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField label="Nombre" required>
+        <FormField label="Nombre" name="firstName" required>
           <Input
             name="firstName"
             value={values.firstName}
@@ -47,7 +47,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
           />
         </FormField>
 
-        <FormField label="Apellido" required>
+        <FormField label="Apellido" name="lastName" required>
           <Input
             name="lastName"
             value={values.lastName}
@@ -58,7 +58,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         </FormField>
       </div>
 
-      <FormField label="Teléfono">
+      <FormField label="Teléfono" name="phoneNumber">
         <Input
           name="phoneNumber"
           value={values.phoneNumber || ""}
@@ -68,7 +68,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         />
       </FormField>
 
-      <FormField label="Biografía">
+      <FormField label="Biografía" name="bio">
         <textarea
           name="bio"
           className="w-full bg-gray-700 text-gray-200 border border-gray-600 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
@@ -82,7 +82,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
       <div className="pt-4 border-t border-gray-700">
         <h3 className="text-lg font-medium text-white mb-3">Enlaces</h3>
         <div className="space-y-3">
-          <FormField label="GitHub">
+          <FormField label="GitHub" name="github">
             <Input
               name="github"
               value={values.github}
@@ -92,7 +92,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             />
           </FormField>
 
-          <FormField label="LinkedIn">
+          <FormField label="LinkedIn" name="linkedin">
             <Input
               name="linkedin"
               value={values.linkedin}
@@ -102,7 +102,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             />
           </FormField>
 
-          <FormField label="Sitio web">
+          <FormField label="Sitio web" name="website">
             <Input
               name="website"
               value={values.website}

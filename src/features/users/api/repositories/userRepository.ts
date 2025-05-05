@@ -27,6 +27,11 @@ export interface IUserRepository {
     page?: number,
     limit?: number
   ): Promise<PaginatedResponse<UserProfile>>;
+  searchUsers(
+    term: string,
+    page?: number,
+    limit?: number
+  ): Promise<PaginatedResponse<UserProfile>>;
   createUser(data: CreateUserData): Promise<UserProfile>;
   updateUser(id: string, data: UserUpdateData): Promise<UserProfile>;
   deleteUser(id: string): Promise<void>;
@@ -67,6 +72,23 @@ class UserRepository implements IUserRepository {
       USERS_ENDPOINTS.BASE,
       {
         params: { page, limit },
+      }
+    );
+    return response;
+  }
+
+  /**
+   * Buscar usuarios por término
+   */
+  async searchUsers(
+    term: string,
+    page = 1,
+    limit = 10
+  ): Promise<PaginatedResponse<UserProfile>> {
+    const response = await apiClient.get<PaginatedResponse<UserProfile>>(
+      USERS_ENDPOINTS.SEARCH,
+      {
+        params: { q: term, page, limit },
       }
     );
     return response;

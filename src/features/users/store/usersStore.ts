@@ -1,6 +1,10 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { UserProfile, UserUpdateData, CreateUserData } from "../types/userTypes";
+import {
+  UserProfile,
+  UserUpdateData,
+  CreateUserData,
+} from "../types/userTypes";
 import { userService } from "../services/userService";
 import { ValidationError } from "../../../core/api/types/errors";
 import { PaginatedResponse } from "../../../core/api/types/responses";
@@ -18,9 +22,11 @@ interface UsersState {
   isLoading: boolean;
   error: string | null;
   fieldErrors: Record<string, string> | null;
+  searchTerm: string;
 
   // Acciones
   fetchUsers: (page?: number, limit?: number) => Promise<void>;
+  searchUsers: (term: string, page?: number, limit?: number) => Promise<void>;
   fetchUserById: (id: string) => Promise<void>;
   getProfile: () => Promise<void>;
   createUser: (data: CreateUserData) => Promise<void>;
@@ -46,6 +52,7 @@ const useUsersStore = create<UsersState>()(
     isLoading: false,
     error: null,
     fieldErrors: null,
+    searchTerm: "",
 
     // Acción: Obtener usuarios con paginación
     fetchUsers: async (page = 1, limit = 10) => {
@@ -72,6 +79,55 @@ const useUsersStore = create<UsersState>()(
             error instanceof Error
               ? error.message
               : "Error al obtener usuarios",
+          fieldErrors: null,
+        });
+      }
+    },
+
+    // Acción: Buscar usuarios
+    searchUsers: async (term: string, page = 1, limit = 10) => {
+      try {
+        set({
+          isLoading: true,
+          error: null,
+          fieldErrors: null,
+          searchTerm: term,
+        });
+
+        // Si el término está vacío, simplemente obtenemos la lista normal
+        if (!term.trim()) {
+          const response = await userService.getUsers(page, limit);
+          set({
+            users: response.data,
+            pagination: {
+              page: response.pagination.currentPage,
+              limit: response.pagination.pageSize,
+              total: response.pagination.totalItems,
+              totalPages: response.pagination.totalPages,
+            },
+            isLoading: false,
+          });
+          return;
+        }
+
+        // Si hay un término de búsqueda, usamos el endpoint de búsqueda
+        const response = await userService.searchUsers(term, page, limit);
+
+        set({
+          users: response.data,
+          pagination: {
+            page: response.pagination.currentPage,
+            limit: response.pagination.pageSize,
+            total: response.pagination.totalItems,
+            totalPages: response.pagination.totalPages,
+          },
+          isLoading: false,
+        });
+      } catch (error) {
+        set({
+          isLoading: false,
+          error:
+            error instanceof Error ? error.message : "Error al buscar usuarios",
           fieldErrors: null,
         });
       }
@@ -144,9 +200,7 @@ const useUsersStore = create<UsersState>()(
           set({
             isLoading: false,
             error:
-              error instanceof Error
-                ? error.message
-                : "Error al crear usuario",
+              error instanceof Error ? error.message : "Error al crear usuario",
             fieldErrors: null,
           });
         }
