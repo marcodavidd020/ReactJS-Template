@@ -11,7 +11,4 @@ export * from './zodValidation';
 export * from './authValidation';
 
 // Exportar validaciones para usuarios
-export * from './userValidation';
-
-// Exportar validaciones para eventos
-export * from "./eventValidation";
+export * from "./userValidation";

@@ -5,7 +5,6 @@ import MainLayout from "../layouts/MainLayout";
 import { publicRoutes, privateRoutes } from "../../config/routes";
 import useAuthStore from "../../features/auth/store/authStore";
 import ProfilePage from "../../features/users/pages/ProfilePage";
-import EventsPage from "../../features/events/pages/EventsPage";
 import AuthChecker from "../../features/auth/components/AuthChecker";
 import UsersPage from "../../features/users/pages/UsersPage";
 
@@ -86,7 +85,6 @@ const AppRouter: React.FC = () => {
             element={<DashboardPlaceholder />}
           />
           <Route path={privateRoutes.profile.path} element={<ProfilePage />} />
-          <Route path={privateRoutes.events.path} element={<EventsPage />} />
           {/* Perfil de usuario */}
           <Route path={privateRoutes.profile.path} element={<ProfilePage />} />
           {/* Gestionar usuarios */}

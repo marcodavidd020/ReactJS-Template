@@ -1,6 +1,6 @@
 import React, { ButtonHTMLAttributes } from "react";
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "text";
+type ButtonVariant = "primary" | "secondary" | "outline" | "text" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -46,6 +46,7 @@ const Button: React.FC<ButtonProps> = ({
     outline:
       "bg-transparent border border-gray-600 text-gray-300 hover:border-gray-400 hover:text-white",
     text: "bg-transparent text-gray-300 hover:text-white hover:bg-gray-800/50",
+    danger: "bg-red-600 text-white hover:bg-red-700",
   };
 
   // Width class

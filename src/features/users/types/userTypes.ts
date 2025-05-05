@@ -119,6 +119,9 @@ export interface UserUpdateData {
   lastName?: string;
   displayName?: string;
   avatar?: string;
+  email?: string;
+  isActive?: boolean;
+  roles?: string[];
 }
 
 /**

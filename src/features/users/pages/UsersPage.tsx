@@ -5,15 +5,23 @@ import LoadingSpinner from "../../../common/components/LoadingSpinner";
 import ErrorMessage from "../../../common/components/ErrorMessage";
 import UsersList from "../components/UsersList";
 import UserCreateForm from "../components/UserCreateForm";
+import UserEditForm from "../components/UserEditForm";
+import DeleteUserModal from "../components/DeleteUserModal";
+import UserSearch from "../components/UserSearch";
 import useUsersStore from "../store/usersStore";
 import Button from "../../../common/components/Button";
+import { UserProfile } from "../types/userTypes";
 
 /**
  * Página para administración de usuarios
  */
 const UsersPage: React.FC = () => {
-  // Estado para mostrar/ocultar el modal de creación
+  // Estados para modales
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
+  const [userToDelete, setUserToDelete] = useState<UserProfile | null>(null);
 
   // Obtener el estado de usuarios
   const { users, pagination, isLoading, error, fetchUsers, deleteUser } =
@@ -29,18 +37,41 @@ const UsersPage: React.FC = () => {
     setShowCreateModal(true);
   };
 
-  const handleCloseModal = () => {
+  const handleEditUser = (userId: string) => {
+    setSelectedUserId(userId);
+    setShowEditModal(true);
+  };
+
+  const handleDeleteUserClick = (user: UserProfile) => {
+    setUserToDelete(user);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (userToDelete) {
+      await deleteUser(userToDelete.id);
+      setShowDeleteModal(false);
+      setUserToDelete(null);
+    }
+  };
+
+  const handleCloseModals = () => {
     setShowCreateModal(false);
+    setShowEditModal(false);
+    setShowDeleteModal(false);
+    setSelectedUserId("");
+    setUserToDelete(null);
+  };
+
+  const handleSearch = (term: string) => {
+    // En una implementación real, se pasaría el término `term` a la API
+    // para buscar usuarios por nombre, email, etc.
+    console.log(`Búsqueda con término: ${term}`); // Usar term para evitar el error
+    fetchUsers(1, pagination.limit);
   };
 
   const handlePageChange = (page: number) => {
     fetchUsers(page, pagination.limit);
-  };
-
-  const handleDeleteUser = async (userId: string) => {
-    if (window.confirm("¿Está seguro que desea eliminar este usuario?")) {
-      await deleteUser(userId);
-    }
   };
 
   // Mostrar estado de carga
@@ -63,18 +94,41 @@ const UsersPage: React.FC = () => {
         <ErrorMessage message="Error al cargar los usuarios" details={error} />
       )}
 
+      {/* Buscador */}
+      <div className="mb-4">
+        <UserSearch onSearch={handleSearch} />
+      </div>
+
       <Card>
         <UsersList
           users={users}
           pagination={pagination}
           onPageChange={handlePageChange}
-          onDeleteUser={handleDeleteUser}
+          onEditUser={handleEditUser}
+          onDeleteUser={handleDeleteUserClick}
         />
       </Card>
 
+      {/* Modales */}
       {showCreateModal && (
-        <UserCreateForm isOpen={showCreateModal} onClose={handleCloseModal} />
+        <UserCreateForm isOpen={showCreateModal} onClose={handleCloseModals} />
       )}
+
+      {showEditModal && selectedUserId && (
+        <UserEditForm
+          userId={selectedUserId}
+          isOpen={showEditModal}
+          onClose={handleCloseModals}
+        />
+      )}
+
+      <DeleteUserModal
+        user={userToDelete}
+        isOpen={showDeleteModal}
+        onClose={handleCloseModals}
+        onConfirm={handleConfirmDelete}
+        isLoading={isLoading}
+      />
     </Container>
   );
 };
