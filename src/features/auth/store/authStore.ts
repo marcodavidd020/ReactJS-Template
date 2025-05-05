@@ -1,14 +1,33 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { AuthState, LoginCredentials, RegisterData } from "../types";
-import authApi from "../api/authApi";
+import {
+  LoginCredentials,
+  RegisterData,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+} from "../types";
+import { UserProfile } from "../../users/types/userTypes";
+import { authService } from "../services/authService";
+import { ValidationError } from "../../../core/api/types/errors";
 
+// Estado de autenticación
+interface AuthState {
+  isAuthenticated: boolean;
+  user: UserProfile | null;
+  isLoading: boolean;
+  error: string | null;
+  fieldErrors: Record<string, string> | null;
+}
+
+// Acciones disponibles en el store
 interface AuthActions {
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  forgotPassword: (data: ForgotPasswordRequest) => Promise<void>;
+  resetPassword: (data: ResetPasswordRequest) => Promise<void>;
   clearError: () => void;
 }
 
@@ -23,17 +42,18 @@ const useAuthStore = create<AuthState & AuthActions>()(
         user: null,
         isLoading: false,
         error: null,
+        fieldErrors: null,
 
         // Acción: Iniciar sesión
         login: async (credentials: LoginCredentials) => {
           try {
-            set({ isLoading: true, error: null });
+            set({ isLoading: true, error: null, fieldErrors: null });
 
-            // Obtener el token
-            await authApi.login(credentials);
-            
+            // Obtener el token a través del servicio
+            await authService.login(credentials);
+
             // Obtener el perfil del usuario
-            const user = await authApi.getProfile();
+            const user = await authService.getProfile();
 
             set({
               isAuthenticated: true,
@@ -41,13 +61,23 @@ const useAuthStore = create<AuthState & AuthActions>()(
               isLoading: false,
             });
           } catch (error) {
-            set({
-              isLoading: false,
-              error:
-                error instanceof Error
-                  ? error.message
-                  : "Error al iniciar sesión",
-            });
+            // Manejar errores de validación
+            if (error instanceof ValidationError) {
+              set({
+                isLoading: false,
+                error: error.message,
+                fieldErrors: error.fieldErrors || null,
+              });
+            } else {
+              set({
+                isLoading: false,
+                error:
+                  error instanceof Error
+                    ? error.message
+                    : "Error al iniciar sesión",
+                fieldErrors: null,
+              });
+            }
             throw error;
           }
         },
@@ -55,13 +85,13 @@ const useAuthStore = create<AuthState & AuthActions>()(
         // Acción: Registrar usuario
         register: async (data: RegisterData) => {
           try {
-            set({ isLoading: true, error: null });
+            set({ isLoading: true, error: null, fieldErrors: null });
 
-            // Registrar y obtener token
-            await authApi.register(data);
-            
+            // Registrar y obtener token a través del servicio
+            await authService.register(data);
+
             // Obtener el perfil del usuario
-            const user = await authApi.getProfile();
+            const user = await authService.getProfile();
 
             set({
               isAuthenticated: true,
@@ -69,13 +99,23 @@ const useAuthStore = create<AuthState & AuthActions>()(
               isLoading: false,
             });
           } catch (error) {
-            set({
-              isLoading: false,
-              error:
-                error instanceof Error
-                  ? error.message
-                  : "Error al registrar usuario",
-            });
+            // Manejar errores de validación
+            if (error instanceof ValidationError) {
+              set({
+                isLoading: false,
+                error: error.message,
+                fieldErrors: error.fieldErrors || null,
+              });
+            } else {
+              set({
+                isLoading: false,
+                error:
+                  error instanceof Error
+                    ? error.message
+                    : "Error al registrar usuario",
+                fieldErrors: null,
+              });
+            }
             throw error;
           }
         },
@@ -85,13 +125,14 @@ const useAuthStore = create<AuthState & AuthActions>()(
           try {
             set({ isLoading: true });
 
-            await authApi.logout();
+            await authService.logout();
 
             set({
               isAuthenticated: false,
               user: null,
               isLoading: false,
               error: null,
+              fieldErrors: null,
             });
           } catch (error) {
             set({
@@ -109,7 +150,7 @@ const useAuthStore = create<AuthState & AuthActions>()(
           try {
             set({ isLoading: true });
 
-            const { isAuthenticated, user } = await authApi.verifyAuth();
+            const { isAuthenticated, user } = await authService.verifyAuth();
 
             set({
               isAuthenticated,
@@ -129,9 +170,67 @@ const useAuthStore = create<AuthState & AuthActions>()(
           }
         },
 
+        // Acción: Solicitar recuperación de contraseña
+        forgotPassword: async (data: ForgotPasswordRequest) => {
+          try {
+            set({ isLoading: true, error: null, fieldErrors: null });
+
+            await authService.forgotPassword(data);
+
+            set({ isLoading: false });
+          } catch (error) {
+            if (error instanceof ValidationError) {
+              set({
+                isLoading: false,
+                error: error.message,
+                fieldErrors: error.fieldErrors || null,
+              });
+            } else {
+              set({
+                isLoading: false,
+                error:
+                  error instanceof Error
+                    ? error.message
+                    : "Error al solicitar recuperación de contraseña",
+                fieldErrors: null,
+              });
+            }
+            throw error;
+          }
+        },
+
+        // Acción: Reiniciar contraseña
+        resetPassword: async (data: ResetPasswordRequest) => {
+          try {
+            set({ isLoading: true, error: null, fieldErrors: null });
+
+            await authService.resetPassword(data);
+
+            set({ isLoading: false });
+          } catch (error) {
+            if (error instanceof ValidationError) {
+              set({
+                isLoading: false,
+                error: error.message,
+                fieldErrors: error.fieldErrors || null,
+              });
+            } else {
+              set({
+                isLoading: false,
+                error:
+                  error instanceof Error
+                    ? error.message
+                    : "Error al reiniciar contraseña",
+                fieldErrors: null,
+              });
+            }
+            throw error;
+          }
+        },
+
         // Acción: Limpiar errores
         clearError: () => {
-          set({ error: null });
+          set({ error: null, fieldErrors: null });
         },
       }),
       {

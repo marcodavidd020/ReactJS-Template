@@ -13,11 +13,11 @@ import { useUser } from "../hooks/useUser";
  * Página de perfil de usuario que permite visualizar y editar información personal
  */
 const ProfilePage: React.FC = () => {
-  const { currentUser, isLoading, error, updateUserProfile } = useUser();
+  const { currentUser, isLoading, error, updateProfile } = useUser();
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSubmit = async (profileData: any) => {
-    await updateUserProfile(profileData);
+    await updateProfile(profileData);
     setIsEditing(false);
   };
 

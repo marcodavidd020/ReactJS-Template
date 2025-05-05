@@ -1,30 +1,40 @@
 import React from "react";
-import ProfileField from "../../../common/components/ProfileField";
-import SocialLink from "../../../common/components/SocialLink";
-import { User } from "../types/userTypes";
+import { UserProfile } from "../types/userTypes";
 
 interface ProfileInfoProps {
-  user: User;
+  user: UserProfile;
 }
 
 /**
- * Componente para visualizar la información del perfil
+ * Componente que muestra la información del perfil de usuario
  */
 const ProfileInfo: React.FC<ProfileInfoProps> = ({ user }) => {
-  return (
-    <div>
-      <ProfileField label="Nombre completo" value={user.fullName} />
-      <ProfileField label="Email" value={user.email} />
-      <ProfileField label="Teléfono" value={user.phoneNumber} />
-      <ProfileField label="Biografía" value={user.bio} />
+  // Generar nombre completo desde firstName y lastName
+  const fullName = user.displayName || `${user.firstName} ${user.lastName}`;
 
-      <div className="pt-4 border-t border-gray-700">
-        <h3 className="text-lg font-medium text-white mb-3">Enlaces</h3>
-        <div className="space-y-2">
-          <SocialLink url={user.socialLinks?.github} label="GitHub" />
-          <SocialLink url={user.socialLinks?.linkedin} label="LinkedIn" />
-          <SocialLink url={user.socialLinks?.website} label="Sitio web" />
+  return (
+    <div className="space-y-4">
+      {/* Información básica */}
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <h3 className="text-sm font-medium text-gray-400">Nombre</h3>
+          <p className="mt-1 text-sm text-white">{fullName}</p>
         </div>
+        <div>
+          <h3 className="text-sm font-medium text-gray-400">
+            Correo electrónico
+          </h3>
+          <p className="mt-1 text-sm text-white">{user.email}</p>
+        </div>
+      </div>
+
+      {/* Rol de usuario */}
+      <div>
+        <h3 className="text-sm font-medium text-gray-400">Rol</h3>
+        {/* <p className="mt-1 text-sm text-white capitalize">{user.role}</p> */}
+        <p className="mt-1 text-sm text-white capitalize">
+          {user.roles.join(", ")}
+        </p>
       </div>
     </div>
   );

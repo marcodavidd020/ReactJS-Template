@@ -66,10 +66,17 @@ export interface AuthState {
   user: User | null;
   isLoading: boolean;
   error: string | null;
+  // Errores específicos por campo (para validación de formularios)
+  fieldErrors: Record<string, string>;
 }
 
 // Datos para recuperación de contraseña
 export interface ForgotPasswordData {
+  email: string;
+}
+
+// Solicitud de recuperación de contraseña (para API)
+export interface ForgotPasswordRequest {
   email: string;
 }
 
@@ -78,4 +85,11 @@ export interface ResetPasswordData {
   password: string;
   confirmPassword: string;
   token: string;
+}
+
+// Solicitud de reinicio de contraseña (para API)
+export interface ResetPasswordRequest {
+  token: string;
+  password: string;
+  confirmPassword: string;
 }

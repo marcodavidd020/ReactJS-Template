@@ -1,5 +1,6 @@
 import { useEffect } from "react";
-import useUserStore from "../store/userStore";
+import useUsersStore from "../store/usersStore";
+import { UserProfile } from "../types/userTypes";
 
 /**
  * Hook para acceder a los datos y funcionalidades de usuario
@@ -12,23 +13,24 @@ export const useUser = () => {
     isLoading,
     error,
     fetchUsers,
-    fetchUserProfile,
-    updateUserProfile,
+    fetchUserById,
+    getProfile,
+    updateUser,
     clearError,
-  } = useUserStore();
+  } = useUsersStore();
 
   // Cargar el perfil del usuario al montar el componente
   useEffect(() => {
     if (!currentUser && !isLoading) {
-      fetchUserProfile();
+      getProfile();
     }
-  }, [currentUser, isLoading, fetchUserProfile]);
+  }, [currentUser, isLoading, getProfile]);
 
   /**
    * Encuentra un usuario por su ID
    */
   const findUserById = (userId: string) => {
-    return users.find((user) => user.id === userId) || null;
+    return users.find((user: UserProfile) => user.id === userId) || null;
   };
 
   /**
@@ -40,17 +42,18 @@ export const useUser = () => {
     const lowerCaseSearch = searchTerm.toLowerCase();
 
     return users.filter(
-      (user) =>
+      (user: UserProfile) =>
         user.email.toLowerCase().includes(lowerCaseSearch) ||
-        user.fullName.toLowerCase().includes(lowerCaseSearch)
+        (user.displayName || `${user.firstName} ${user.lastName}`).toLowerCase().includes(lowerCaseSearch)
     );
   };
 
   /**
    * Verifica si el usuario actual tiene un rol específico
    */
-  const hasRole = (role: string) => {
-    return currentUser?.roles.includes(role);
+  const hasRole = (roleName: string) => {
+    // return currentUser?.role === roleName;
+    return currentUser?.roles.includes(roleName);
   };
 
   return {
@@ -59,11 +62,14 @@ export const useUser = () => {
     isLoading,
     error,
     fetchUsers,
-    fetchUserProfile,
-    updateUserProfile,
+    fetchUserById,
+    getProfile,
+    updateProfile: (data: any) => updateUser(currentUser?.id || "", data),
     clearError,
     findUserById,
     searchUsers,
     hasRole,
   };
 };
+
+export default useUser;

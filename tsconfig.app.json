@@ -1,17 +1,17 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2020",
+    "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
     "isolatedModules": true,
-    "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
 
@@ -20,7 +20,21 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    
+    /* Paths aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@app/*": ["src/app/*"],
+      "@common/*": ["src/common/*"],
+      "@features/*": ["src/features/*"],
+      "@config/*": ["src/config/*"],
+      "@core/*": ["src/core/*"],
+      "@assets/*": ["src/assets/*"],
+      "@types/*": ["src/types/*"],
+      "@stores/*": ["src/stores/*"],
+      "@styles/*": ["src/styles/*"]
+    }
   },
   "include": ["src"]
 }

@@ -1,7 +1,16 @@
 import { AxiosError } from "axios";
+import { 
+  ApiError as CoreApiError, 
+  AuthenticationError, 
+  ValidationError,
+  ServerError,
+  createErrorFromStatus
+} from "../../core/api/types/errors";
+import { handleError as coreHandleError } from "../../core/utils/errors/errorHandler";
 
 /**
  * Tipo para errores API estandarizados
+ * @deprecated Use ApiError from core/api/types/errors instead
  */
 export interface ApiError {
   message: string;
@@ -11,15 +20,19 @@ export interface ApiError {
 
 /**
  * Formatea los errores de Axios de manera consistente
+ * @deprecated Use handleError from core/utils/errors/errorHandler instead
  * @param error Error recibido
  * @param context Contexto donde ocurrió el error para mejor identificación
  * @returns Error formateado
  */
 export const formatApiError = (error: unknown, context: string): ApiError => {
+  console.warn('formatApiError is deprecated, use handleError from core/utils/errors/errorHandler instead');
+  
   // Si es un error de Axios, extraer la información relevante
   if (error instanceof AxiosError) {
     const status = error.response?.status;
-    const apiErrorMessage = error.response?.data?.message || error.message;
+    const responseData = error.response?.data as Record<string, any>;
+    const apiErrorMessage = responseData?.message || error.message;
 
     console.error(`Error API (${context}):`, {
       status,
@@ -47,10 +60,13 @@ export const formatApiError = (error: unknown, context: string): ApiError => {
 
 /**
  * Mapea códigos HTTP a mensajes de error amigables
+ * @deprecated Use userMessage from ApiError classes in core/api/types/errors
  * @param statusCode Código HTTP del error
  * @returns Mensaje de error amigable
  */
 export const getErrorMessageByStatus = (statusCode?: number): string => {
+  console.warn('getErrorMessageByStatus is deprecated, use userMessage from ApiError classes');
+  
   switch (statusCode) {
     case 400:
       return "Solicitud incorrecta. Por favor, revise los datos enviados.";
@@ -73,6 +89,7 @@ export const getErrorMessageByStatus = (statusCode?: number): string => {
 
 /**
  * Función para manejar errores en componentes React
+ * @deprecated Use handleError from core/utils/errors/errorHandler instead
  * @param error Error recibido
  * @param context Contexto donde ocurrió el error
  * @param fallbackMessage Mensaje alternativo si no se puede extraer uno del error
@@ -83,11 +100,23 @@ export const handleComponentError = (
   context: string,
   fallbackMessage = "Ha ocurrido un error inesperado"
 ): string => {
-  const apiError = formatApiError(error, context);
+  console.warn('handleComponentError is deprecated, use handleError from core/utils/errors/errorHandler instead');
+  
+  // Delegamos al nuevo sistema de manejo de errores
+  const coreError = coreHandleError(error, {
+    context,
+    showNotification: false, // No mostramos notificación aquí, solo devolvemos el mensaje
+  });
+  
+  return coreError.userMessage || fallbackMessage;
+};
 
-  if (apiError.statusCode) {
-    return apiError.message || getErrorMessageByStatus(apiError.statusCode);
-  }
-
-  return apiError.message || fallbackMessage;
+// Re-exportar los tipos principales del core para facilitar la migración
+export type { CoreApiError as ApiErrorType };
+export { 
+  AuthenticationError, 
+  ValidationError, 
+  ServerError,
+  createErrorFromStatus,
+  coreHandleError as handleError
 };

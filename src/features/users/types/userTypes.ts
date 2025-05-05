@@ -80,13 +80,45 @@ export interface User {
 }
 
 /**
+ * Tipos relacionados con usuarios
+ *
+ * Define las interfaces y tipos utilizados en la característica de usuarios.
+ */
+
+/**
+ * Perfil de usuario
+ */
+export interface UserProfile {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  displayName?: string;
+  avatar?: string;
+  // role: UserRole;
+  roles: string[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
  * Roles de usuario disponibles
  */
 export enum UserRole {
-  ADMIN = 'admin',
-  MEMBER = 'member',
-  MODERATOR = 'moderator',
-  GUEST = 'guest'
+  ADMIN = "admin",
+  USER = "user",
+  MODERATOR = "moderator",
+}
+
+/**
+ * Datos para actualización de usuario
+ */
+export interface UserUpdateData {
+  firstName?: string;
+  lastName?: string;
+  displayName?: string;
+  avatar?: string;
 }
 
 /**
@@ -109,12 +141,15 @@ export interface UpdateProfileRequest {
   skills?: string[];
 }
 
-// Búsqueda de usuarios
+/**
+ * Parámetros para búsqueda de usuarios
+ */
 export interface UserSearchParams {
   query?: string;
-  role?: string;
+  role?: UserRole;
+  isActive?: boolean;
   page?: number;
   limit?: number;
   sortBy?: string;
-  sortDirection?: 'asc' | 'desc';
-} 
+  sortDirection?: "asc" | "desc";
+}
