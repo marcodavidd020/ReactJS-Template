@@ -1,218 +1,358 @@
-# CDS - Sistema de Gestión para la Comunidad de Desarrollo de Software
 
-![Logo CDS](src/assets/logo-cds.png)
 
-## Guía de Diseño y Estilo
 
-Este documento sirve como guía para mantener la consistencia visual y funcional a través de todo el sistema CDS (Comunidad de Desarrollo de Software).
+# Documentación de Arquitectura y Estructura del Proyecto
 
-### 1. Tipografía
+Este documento describe la arquitectura, estructura y patrones de diseño utilizados en el desarrollo del Sistema.
 
-#### Fuente Principal
-- **Familia**: Inter
-- **CDN**: `https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap`
-- **Uso**:
-  - Títulos: Bold (700)
-  - Subtítulos: Medium (500)
-  - Texto general: Regular (400)
-  - Texto secundario: Light (300)
+Backend para la coneccion [NestJS-Template](https://github.com/marcodavidd020/NestJS-Template)
 
-#### Características Tipográficas
-- **Tracking**:
-  - Títulos: tracking-tight
-  - Párrafos: tracking-normal
-  - Información secundaria: tracking-wide
-- **Tamaños**:
-  - Títulos principales: text-2xl a text-4xl
-  - Subtítulos: text-xl
-  - Texto general: text-base
-  - Texto secundario: text-sm
-  - Notas o detalles: text-xs
+## Índice
 
-### 2. Paleta de Colores
+1. [Tecnologías Principales](#tecnologías-principales)
+2. [Arquitectura del Proyecto](#arquitectura-del-proyecto)
+3. [Estructura de Carpetas](#estructura-de-carpetas)
+4. [Patrones de Diseño](#patrones-de-diseño)
+5. [Gestión de Estado](#gestión-de-estado)
+6. [Componentes Principales](#componentes-principales)
+7. [Flujos de Datos](#flujos-de-datos)
+8. [Manejo de Errores](#manejo-de-errores)
+9. [Testing](#testing)
+10. [Deployment](#deployment)
 
-#### Colores Principales (basados en el logo)
-- **Azul**: 
-  - Claro: `#3B82F6` (blue-500)
-  - Oscuro: `#2563EB` (blue-600)
-  - Variación cyan: `#22D3EE` (cyan-400)
+## Tecnologías Principales
 
-- **Morado**: 
-  - Principal: `#9333EA` (purple-600)
-  - Variación clara: `#A855F7` (purple-500)
+- **Framework**: React v18
+- **Lenguaje**: TypeScript
+- **Bundler/Builder**: Vite
+- **Estilos**: Tailwind CSS
+- **Gestión de Estado**: Zustand + immer
+- **Comunicación con API**: Axios
+- **Validación de Datos**: Zod
+- **UI Components**: HeadlessUI
+- **Testing**: Vitest + Testing Library
 
-- **Rosa/Rojo**:
-  - Principal: `#EC4899` (pink-500)
-  - Variación oscura: `#DB2777` (pink-600)
+## Arquitectura del Proyecto
 
-#### Colores del Tema Oscuro
-- **Fondos**:
-  - Fondo principal: `#111827` (gray-900)
-  - Fondo secundario: `#1F2937` (gray-800)
-  - Componentes: `#374151` (gray-700)
-  - Bordes: `#4B5563` (gray-600)
+La aplicación sigue una **arquitectura basada en características** (feature-based architecture) con una clara separación de responsabilidades. Este enfoque organiza el código alrededor de funcionalidades de negocio en lugar de roles técnicos, lo que facilita la escalabilidad y el mantenimiento.
 
-- **Texto**:
-  - Texto principal: `#F9FAFB` (gray-50)
-  - Texto secundario: `#9CA3AF` (gray-400)
-  - Etiquetas: `#D1D5DB` (gray-300)
+### Principios Arquitectónicos
 
-### 3. Elementos de Diseño
+1. **Separación de Responsabilidades**: Cada módulo tiene una responsabilidad única y bien definida.
+2. **Independencia de Características**: Las características (features) son independientes y pueden ser desarrolladas, probadas y mantenidas por separado.
+3. **Capas de Abstracción**: La aplicación está dividida en capas que facilitan el flujo de datos y la separación de preocupaciones.
+4. **Modelos de Dominio**: Uso de tipos y modelos de dominio específicos para cada característica.
+5. **Abstracción de APIs**: Capa de acceso a datos centralizada con repositorios específicos por dominio.
 
-#### Gradientes
-- **Gradiente Principal**: `bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500`
-- **Gradiente para Texto**: `bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 text-transparent bg-clip-text`
-- **Gradiente para Enlaces**: `bg-gradient-to-r from-blue-400 to-cyan-300 text-transparent bg-clip-text`
+## Estructura de Carpetas
 
-#### Sombras
-- **Componentes principales**: `shadow-xl`
-- **Botones en hover**: `hover:shadow-lg hover:shadow-purple-500/20`
-
-#### Bordes y Esquinas
-- **Radios de borde**:
-  - Componentes grandes: `rounded-2xl`
-  - Botones y entradas: `rounded-lg`
-  - Chips o tags: `rounded-full`
-- **Bordes sutiles**: `border border-gray-700`
-
-#### Transiciones y Animaciones
-- **Transición general**: `transition`
-- **Transición completa**: `transition-all duration-200`
-- **Efecto hover en botones**: `transform hover:-translate-y-0.5`
-
-### 4. Componentes UI
-
-#### Botones
-```jsx
-<button 
-  className="py-2.5 px-4 text-white font-medium rounded-lg bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 hover:shadow-lg hover:shadow-purple-500/20 hover:opacity-95 transition-all duration-200 transform hover:-translate-y-0.5"
->
-  Acción Principal
-</button>
+```
+src/
+│
+├── app/ - Configuración global de la aplicación
+│   ├── layouts/ - Layouts reutilizables (dashboard, auth, etc.)
+│   ├── providers/ - Providers de React Context
+│   └── routes/ - Configuración de rutas
+│
+├── assets/ - Recursos estáticos (imágenes, iconos, etc.)
+│
+├── common/ - Código compartido entre características
+│   ├── components/ - Componentes UI genéricos reutilizables
+│   ├── hooks/ - Hooks personalizados reutilizables
+│   └── utils/ - Utilidades y funciones helpers
+│
+├── core/ - Código central de la aplicación (no específico de características)
+│   ├── api/ - Configuración base de API y tipos relacionados
+│   ├── auth/ - Lógica de autenticación central
+│   └── utils/ - Utilidades globales
+│
+├── features/ - Módulos de funcionalidades específicas
+│   ├── auth/ - Autenticación y autorización
+│   │   ├── api/ - Comunicación con API de auth
+│   │   ├── components/ - Componentes específicos de auth
+│   │   └── store/ - Estado global de auth (Zustand)
+│   │
+│   ├── users/ - Gestión de usuarios
+│   │   ├── api/ - Comunicación con API de usuarios
+│   │   │   └── repositories/ - Repositorios de datos
+│   │   ├── components/ - Componentes específicos de usuarios
+│   │   ├── hooks/ - Hooks personalizados para usuarios
+│   │   ├── pages/ - Páginas relacionadas con usuarios
+│   │   ├── services/ - Servicios para lógica de negocio
+│   │   ├── store/ - Estado global de usuarios (Zustand)
+│   │   └── types/ - Tipos y interfaces específicos
+│   │
+│   └── events/ - Gestión de eventos
+│       ├── ...estructura similar a users/
+│
+├── lib/ - Librerías y utilidades externas
+│   ├── i18n/ - Internacionalización
+│   └── api/ - Configuración de clientes API
+│
+├── config/ - Configuraciones de la aplicación
+│   ├── constants.ts - Constantes globales
+│   ├── routes.ts - Definición de rutas
+│   └── apiClient.ts - Cliente HTTP centralizado
+│
+└── types/ - Tipos globales TypeScript
 ```
 
-#### Campos de Formulario
-```jsx
-<div>
-  <label className="block text-sm font-medium text-gray-300">
-    Etiqueta
-  </label>
-  <input
-    type="text"
-    placeholder="Placeholder"
-    className="w-full mt-1 px-4 py-2.5 bg-gray-700 text-gray-200 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none transition"
-  />
-</div>
+## Patrones de Diseño
+
+### 1. Patrón Repositorio
+
+Utilizado para abstraer la comunicación con la API. Cada entidad del dominio tiene su propio repositorio que encapsula la lógica de acceso a datos.
+
+```typescript
+// Ejemplo: userRepository.ts
+class UserRepository {
+  async getUsers(page: number, limit: number): Promise<PaginatedResponse<User>> {
+    const response = await apiClient.get('/users', { params: { page, limit } });
+    return response;
+  }
+  
+  async getUserById(id: string): Promise<User> {
+    const response = await apiClient.get(`/users/${id}`);
+    return response.data;
+  }
+}
 ```
 
-#### Tarjetas
-```jsx
-<div className="bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-700">
-  {/* Contenido */}
-</div>
+### 2. Patrón Servicio
+
+Implementa la lógica de negocio independiente de la UI, realizando validaciones y operaciones complejas.
+
+```typescript
+// Ejemplo: userService.ts
+class UserService {
+  async createUser(data: CreateUserData): Promise<User> {
+    // Validar datos
+    const validData = await validateUserCreate(data);
+    
+    // Crear usuario usando el repositorio
+    return await userRepository.createUser(validData);
+  }
+}
 ```
 
-#### Enlaces
-```jsx
-<a href="#" className="font-medium bg-gradient-to-r from-blue-400 to-cyan-300 text-transparent bg-clip-text hover:underline">
-  Enlace
-</a>
+### 3. Custom Hooks
+
+Para encapsular lógica reutilizable y separar las preocupaciones en los componentes.
+
+```typescript
+// Ejemplo: useUserForm.tsx
+const useUserForm = (type: "create" | "update", initialData?: User) => {
+  const [formData, setFormData] = useState<UserFormData>({/*...*/});
+  
+  // Lógica para manejar formulario, validaciones, etc.
+  
+  return {
+    formData,
+    handleChange,
+    handleSubmit,
+    errors,
+    // ...otros valores y métodos
+  };
+}
 ```
 
-### 5. Elementos Decorativos
+### 4. Componentes Compuestos
 
-#### Fondos con Patrones
-- Círculos con gradiente y desenfoque
-- Patrones SVG de puntos y líneas
-- Opacidad baja (5%)
+Para crear APIs flexibles y componentes relacionados como familias.
 
-```jsx
-{/* Elementos decorativos */}
-<div className="absolute -top-10 -left-10 w-64 h-64 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 opacity-5 blur-xl" />
+```tsx
+// Ejemplo: estructura de componente Table
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.HeadCell>Nombre</Table.HeadCell>
+      {/* ... */}
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    {/* ... */}
+  </Table.Body>
+</Table>
 ```
 
-#### Patrones SVG
-```jsx
-{/* SVG pattern */}
-<svg className="absolute top-0 left-0 w-full h-full opacity-5" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <pattern id="smallGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" strokeWidth="0.5" opacity="0.3" />
-    </pattern>
-    <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
-      <circle cx="10" cy="10" r="1" fill="white" opacity="0.3" />
-    </pattern>
-  </defs>
-  <rect width="100%" height="100%" fill="url(#smallGrid)" />
-  <rect width="100%" height="100%" fill="url(#dots)" />
-</svg>
+## Gestión de Estado
+
+La aplicación utiliza **Zustand** con **immer** para la gestión de estado global, proporcionando un enfoque simple pero potente.
+
+### Estructura de Store
+
+Cada característica tiene su propio store que contiene:
+
+1. **Estado**: Datos actuales y flags (loading, error)
+2. **Acciones**: Funciones para modificar el estado
+3. **Efectos**: Operaciones asíncronas como llamadas a la API
+
+```typescript
+// Ejemplo: usersStore.ts
+interface UsersState {
+  // Estado
+  users: UserProfile[];
+  isLoading: boolean;
+  error: string | null;
+  formError: string | null;
+  
+  // Acciones
+  fetchUsers: (page?: number) => Promise<void>;
+  createUser: (data: CreateUserData) => Promise<void>;
+  // ...otras acciones
+}
+
+const useUsersStore = create<UsersState>()(
+  immer((set) => ({
+    // Estado inicial
+    users: [],
+    isLoading: false,
+    error: null,
+    formError: null,
+    
+    // Acciones
+    fetchUsers: async (page = 1) => {
+      try {
+        set({ isLoading: true, error: null });
+        const response = await userService.getUsers(page);
+        set((state) => {
+          state.users = response.data;
+          state.isLoading = false;
+        });
+      } catch (error) {
+        set({ isLoading: false, error: "Error al cargar usuarios" });
+      }
+    },
+    // ...otras acciones
+  }))
+);
 ```
 
-### 6. Principios de Diseño
+### Separación de Errores
 
-#### Espacio y Respiración
-- Usar espaciado vertical consistente (`space-y-5`)
-- Padding generoso en componentes (`p-8`)
-- Margen entre secciones (`mb-8`)
+Diferentes tipos de errores están separados:
+- `error`: Errores generales de operaciones (carga de listas, operaciones globales)
+- `formError`: Errores específicos de formularios y validaciones
+- `fieldErrors`: Errores por campo específico en formularios
 
-#### Jerarquía Visual
-- El logo siempre debe ser prominente
-- Usar gradientes para elementos principales de acción
-- Los elementos de mayor importancia deben tener mayor peso visual
+## Componentes Principales
 
-#### Accesibilidad
-- Mantener ratio de contraste alto entre texto y fondo
-- Utilizar estados focus visibles con anillos (`focus:ring-2`)
-- Etiquetas de formulario deben ser descriptivas
+### Estructura de Componentes
 
-### 7. Integración de la Marca
+Los componentes siguen una estructura jerárquica:
 
-- Usar siempre el logo oficial de CDS en su versión completa o reducida
-- Mantener consistencia con los colores del gradiente que representa la identidad visual
-- La tipografía Inter refleja el aspecto moderno y tecnológico de la marca
+1. **Páginas**: Contenedores de nivel superior para rutas específicas
+2. **Componentes de Característica**: Implementan funcionalidad específica del dominio
+3. **Componentes UI Comunes**: Elementos de interfaz reutilizables (botones, inputs, modales)
 
-### 8. Componentes y Páginas Recomendadas
+### Componentes Base
 
-Para extender este sistema, considerar desarrollar:
+- **Modal**: Componente para diálogos y formularios modales.
+- **Form**: Familia de componentes para construir formularios.
+- **Button**: Botones con diferentes variantes y estados.
+- **Input**: Campos de entrada con validación y estados.
+- **Table**: Componente para mostrar datos tabulares.
+- **Card**: Contenedor para mostrar contenido encapsulado.
 
-- Navegación principal con el logo CDS
-- Dashboard con estadísticas
-- Sistema de notificaciones
-- Perfiles de usuario
-- Listados de proyectos
-- Calendario de eventos
-- Foro o sistema de comentarios
+### Patrones de Componentes
 
-### 9. Configuración Técnica
+- **Composición sobre herencia**: Preferimos componer componentes pequeños.
+- **Prop Drilling minimizado**: Uso de contexto y hooks para evitar prop drilling excesivo.
+- **Componentes controlados**: La mayoría de componentes son controlados para mayor flexibilidad.
+- **Renderizado condicional**: Uso extensivo de renderizado condicional para diferentes estados.
 
-Para usar esta guía de estilo, incluir en el proyecto:
+## Flujos de Datos
 
-1. **Tailwind CSS**: Para los estilos y utilidades
-2. **Fuente Inter**: 
-   ```html
-   <link rel="preconnect" href="https://fonts.googleapis.com">
-   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-   ```
-3. **Configuración de Tailwind**:
-   ```js
-   // tailwind.config.js
-   module.exports = {
-     theme: {
-       extend: {
-         fontFamily: {
-           sans: ['Inter', 'sans-serif'],
-         },
-       },
-     },
-   }
-   ```
+### Flujo Unidireccional
 
-## Licencia
+La aplicación sigue un flujo de datos unidireccional:
 
-[Especificar licencia]
+1. **Usuario interactúa** con la interfaz
+2. **Componentes** llaman a acciones del store o servicios
+3. **Store/Servicios** realizan operaciones y actualizan estado
+4. **UI se renderiza** nuevamente basándose en el nuevo estado
+
+### Capa API
+
+La comunicación con el backend está estructurada en capas:
+
+1. **apiClient**: Cliente HTTP centralizado con interceptores
+2. **repositories**: Abstraen endpoints específicos
+3. **services**: Implementan lógica de negocio y validaciones
+4. **stores**: Manejan estado global y acciones
+5. **componentes/hooks**: Consumen datos y acciones
+
+## Manejo de Errores
+
+### Estrategia de Errores
+
+- **Errores de API**: Capturados y transformados por interceptores y servicios
+- **Errores de Validación**: Manejados por esquemas Zod y componentes de formulario
+- **Errores de UI**: Mensajes claros para guiar al usuario
+- **Errores Globales**: Mensajes de error en la parte superior de la página
+- **Errores de Formulario**: Errores específicos por campo y mensajes globales
+
+### Implementación
+
+```typescript
+// Ejemplo de captura de errores en store
+try {
+  // Operación que puede fallar
+} catch (error) {
+  if (error instanceof ValidationError) {
+    set({
+      isLoading: false,
+      formError: error.message,
+      fieldErrors: error.fieldErrors || null,
+    });
+  } else {
+    set({
+      isLoading: false,
+      error: error instanceof Error ? error.message : "Error inesperado",
+    });
+  }
+}
+```
+
+## Testing
+
+### Enfoque de Testing
+
+1. **Tests Unitarios**: Para lógica aislada (hooks, utilidades, servicios)
+2. **Tests de Integración**: Para interacciones de componentes
+3. **Tests de Interfaz**: Para verificar el comportamiento visual
+4. **Tests E2E**: Para flujos críticos de usuario
+
+### Herramientas
+
+- **Vitest**: Framework de testing
+- **Testing Library**: Para testing basado en accesibilidad y comportamiento
+- **MSW**: Para simular respuestas de API
+- **Cypress**: Para tests E2E (opcional)
+
+## Deployment
+
+### Pipeline CI/CD
+
+1. **Linting**: ESLint para verificar estilo y problemas potenciales
+2. **Testing**: Ejecución de tests automatizados
+3. **Build**: Construcción de artefactos optimizados
+4. **Deploy**: Publicación en el entorno correspondiente
+
+### Configuración de Entornos
+
+- **Desarrollo**: Variables de entorno para desarrollo local
+- **Staging**: Entorno de pre-producción para QA
+- **Producción**: Entorno de producción con optimizaciones
+
+## Guía de Estilo
+
+Para información detallada sobre el diseño visual, componentes UI y guía de estilo, consulte [STYLEGUIDE.md](./STYLEGUIDE.md).
+
+## Contribución
+
+Consulte [CONTRIBUTING.md](./CONTRIBUTING.md) para obtener información sobre cómo contribuir al proyecto, incluyendo estándares de código, proceso de pull request y otros lineamientos importantes.
 
 ---
 
 © 2023 Comunidad de Desarrollo de Software (CDS)
-# template-login-comunidad
