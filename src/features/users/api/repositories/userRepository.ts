@@ -11,7 +11,11 @@ import {
   PaginatedResponse,
 } from "../../../../core/api/types/responses";
 import { USERS_ENDPOINTS } from "../endpoints";
-import { UserProfile, UserUpdateData } from "../../types/userTypes";
+import {
+  UserProfile,
+  UserUpdateData,
+  CreateUserData,
+} from "../../types/userTypes";
 
 /**
  * Interfaz que define las operaciones disponibles en el repositorio de usuarios
@@ -23,6 +27,7 @@ export interface IUserRepository {
     page?: number,
     limit?: number
   ): Promise<PaginatedResponse<UserProfile>>;
+  createUser(data: CreateUserData): Promise<UserProfile>;
   updateUser(id: string, data: UserUpdateData): Promise<UserProfile>;
   deleteUser(id: string): Promise<void>;
 }
@@ -65,6 +70,17 @@ class UserRepository implements IUserRepository {
       }
     );
     return response;
+  }
+
+  /**
+   * Crear un nuevo usuario
+   */
+  async createUser(data: CreateUserData): Promise<UserProfile> {
+    const response = await apiClient.post<ApiResponse<UserProfile>>(
+      USERS_ENDPOINTS.CREATE,
+      data
+    );
+    return response.data;
   }
 
   /**

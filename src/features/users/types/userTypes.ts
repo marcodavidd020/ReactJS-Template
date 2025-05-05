@@ -122,6 +122,18 @@ export interface UserUpdateData {
 }
 
 /**
+ * Datos para creación de nuevo usuario
+ */
+export interface CreateUserData {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  avatar?: string;
+  roles: string[];
+}
+
+/**
  * Datos para peticiones a la API
  */
 

@@ -80,6 +80,11 @@ const MainLayout: React.FC = () => {
                   Comunidad
                 </a>
               </li>
+              <li>
+                <a href={ROUTES.users} className={styles.navLink}>
+                  Usuarios
+                </a>
+              </li>
             </ul>
           </nav>
 

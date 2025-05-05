@@ -31,6 +31,7 @@ export const ROUTES = {
   profile: "/profile",
   events: "/events",
   projects: "/projects",
+  users: "/users",
 };
 
 // Mensajes de error

@@ -5,8 +5,8 @@
  */
 
 import { z } from "zod";
-import { UserUpdateData } from "../../../features/users/types/userTypes";
-import { validateWithSchema, email, name } from "./zodValidation";
+import { UserUpdateData, CreateUserData } from "../../../features/users/types/userTypes";
+import { validateWithSchema, email, name, password } from "./zodValidation";
 
 // Esquema de perfil de usuario
 export const userProfileSchema = z.object({
@@ -36,6 +36,16 @@ export const userUpdateSchema = z.object({
   avatar: z.string().optional(),
 });
 
+// Esquema para creación de usuario
+export const userCreateSchema = z.object({
+  email: email,
+  firstName: name,
+  lastName: name,
+  password: password,
+  avatar: z.string().url("URL inválida").optional(),
+  roles: z.array(z.string()),
+});
+
 /**
  * Valida actualización de perfil
  * @param data Datos de perfil
@@ -50,4 +60,12 @@ export function validateUserProfile(data: unknown) {
  */
 export function validateUserUpdate(data: UserUpdateData) {
   return validateWithSchema(userUpdateSchema, data);
+}
+
+/**
+ * Valida creación de usuario
+ * @param data Datos para crear un nuevo usuario
+ */
+export function validateUserCreate(data: CreateUserData) {
+  return validateWithSchema(userCreateSchema, data);
 }

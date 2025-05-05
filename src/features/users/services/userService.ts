@@ -1,18 +1,15 @@
 /**
- * Servicio de Usuarios
+ * Servicios para operaciones de usuario
  *
- * Implementa la lógica de negocio relacionada con usuarios.
- * Utiliza el repositorio para acceder a los datos y aplica reglas de negocio.
+ * Implementa la lógica de negocio y validaciones para las operaciones de usuario,
+ * separándolas del acceso a datos (repositorio) y la gestión de estado (store).
  */
 
-import {
-  userRepository,
-  IUserRepository,
-} from "../api/repositories/userRepository";
-import { UserProfile, UserUpdateData } from "../types/userTypes";
+import userRepository from "../api/repositories/userRepository";
+import { CreateUserData, UserProfile, UserUpdateData } from "../types/userTypes";
 import { PaginatedResponse } from "../../../core/api/types/responses";
 import { handleError } from "../../../core/utils/errors/errorHandler";
-import { validateUserUpdate } from "../../../core/utils/validation";
+import { validateUserUpdate, validateUserCreate } from "../../../core/utils/validation";
 import { ValidationError } from "../../../core/api/types/errors";
 
 /**
@@ -25,82 +22,81 @@ export interface IUserService {
     page?: number,
     limit?: number
   ): Promise<PaginatedResponse<UserProfile>>;
+  createUser(data: CreateUserData): Promise<UserProfile>;
   updateUser(id: string, data: UserUpdateData): Promise<UserProfile>;
   deleteUser(id: string): Promise<void>;
 }
 
 /**
- * Implementación del servicio de usuarios
+ * Servicio para la gestión de usuarios
  */
-class UserService implements IUserService {
-  private repository: IUserRepository;
-
-  constructor(repository: IUserRepository) {
-    this.repository = repository;
-  }
-
+export const userService = {
   /**
-   * Obtener perfil del usuario actual
+   * Obtener el perfil del usuario actual
    */
-  async getProfile(): Promise<UserProfile> {
+  getProfile: async (): Promise<UserProfile> => {
     try {
-      return await this.repository.getProfile();
+      return await userRepository.getProfile();
     } catch (error) {
       throw handleError(error, {
         context: "userService.getProfile",
         userMessage: "Error al obtener el perfil de usuario.",
       });
     }
-  }
+  },
 
   /**
-   * Obtener un usuario por su ID
+   * Obtener usuario por ID
    */
-  async getUserById(id: string): Promise<UserProfile> {
+  getUserById: async (id: string): Promise<UserProfile> => {
     try {
-      return await this.repository.getUserById(id);
+      return await userRepository.getUserById(id);
     } catch (error) {
       throw handleError(error, {
         context: "userService.getUserById",
         userMessage: "Error al obtener el usuario solicitado.",
       });
     }
-  }
+  },
 
   /**
    * Obtener lista paginada de usuarios
    */
-  async getUsers(
+  getUsers: async (
     page = 1,
     limit = 10
-  ): Promise<PaginatedResponse<UserProfile>> {
+  ): Promise<PaginatedResponse<UserProfile>> => {
     try {
-      return await this.repository.getUsers(page, limit);
+      return await userRepository.getUsers(page, limit);
     } catch (error) {
       throw handleError(error, {
         context: "userService.getUsers",
         userMessage: "Error al obtener la lista de usuarios.",
       });
     }
-  }
+  },
+
+  /**
+   * Crear un nuevo usuario
+   */
+  createUser: async (data: CreateUserData): Promise<UserProfile> => {
+    // Validar datos
+    const validData = await validateUserCreate(data);
+    
+    // Crear usuario
+    return await userRepository.createUser(validData);
+  },
 
   /**
    * Actualizar datos de un usuario
    */
-  async updateUser(id: string, data: UserUpdateData): Promise<UserProfile> {
+  updateUser: async (id: string, data: UserUpdateData): Promise<UserProfile> => {
     try {
-      // Validar datos antes de enviar al repositorio
-      try {
-        validateUserUpdate(data);
-      } catch (validationError) {
-        throw new ValidationError(
-          validationError instanceof Error
-            ? validationError.message
-            : "Datos de usuario inválidos"
-        );
-      }
+      // Validar datos
+      const validData = await validateUserUpdate(data);
 
-      return await this.repository.updateUser(id, data);
+      // Actualizar usuario
+      return await userRepository.updateUser(id, validData);
     } catch (error) {
       if (error instanceof ValidationError) {
         throw error;
@@ -111,23 +107,21 @@ class UserService implements IUserService {
         userMessage: "Error al actualizar el usuario.",
       });
     }
-  }
+  },
 
   /**
    * Eliminar un usuario
    */
-  async deleteUser(id: string): Promise<void> {
+  deleteUser: async (id: string): Promise<void> => {
     try {
-      await this.repository.deleteUser(id);
+      await userRepository.deleteUser(id);
     } catch (error) {
       throw handleError(error, {
         context: "userService.deleteUser",
         userMessage: "Error al eliminar el usuario.",
       });
     }
-  }
-}
+  },
+};
 
-// Exportar una instancia única del servicio
-export const userService = new UserService(userRepository);
 export default userService;

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { UserProfile, UserUpdateData } from "../types/userTypes";
+import { UserProfile, UserUpdateData, CreateUserData } from "../types/userTypes";
 import { userService } from "../services/userService";
 import { ValidationError } from "../../../core/api/types/errors";
 import { PaginatedResponse } from "../../../core/api/types/responses";
@@ -23,6 +23,7 @@ interface UsersState {
   fetchUsers: (page?: number, limit?: number) => Promise<void>;
   fetchUserById: (id: string) => Promise<void>;
   getProfile: () => Promise<void>;
+  createUser: (data: CreateUserData) => Promise<void>;
   updateUser: (id: string, data: UserUpdateData) => Promise<void>;
   deleteUser: (id: string) => Promise<void>;
   clearError: () => void;
@@ -117,6 +118,39 @@ const useUsersStore = create<UsersState>()(
               : "Error al obtener perfil de usuario",
           fieldErrors: null,
         });
+      }
+    },
+
+    // Acción: Crear nuevo usuario
+    createUser: async (data: CreateUserData) => {
+      try {
+        set({ isLoading: true, error: null, fieldErrors: null });
+
+        const newUser = await userService.createUser(data);
+
+        set((state) => {
+          // Añadir el nuevo usuario al principio de la lista
+          state.users = [newUser, ...state.users];
+          state.isLoading = false;
+        });
+      } catch (error) {
+        if (error instanceof ValidationError) {
+          set({
+            isLoading: false,
+            error: error.message,
+            fieldErrors: error.fieldErrors || null,
+          });
+        } else {
+          set({
+            isLoading: false,
+            error:
+              error instanceof Error
+                ? error.message
+                : "Error al crear usuario",
+            fieldErrors: null,
+          });
+        }
+        throw error;
       }
     },
 
