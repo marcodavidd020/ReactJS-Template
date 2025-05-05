@@ -1,0 +1,111 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+// React + TypeScript + Vite + Tailwind .cursorrules
+
+// Prefer functional components with hooks
+const preferFunctionalComponents = true;
+
+// Core architecture and best practices
+const coreBestPractices = [
+  "Feature-based architecture for scalability",
+  "Zustand for global state management",
+  "Centralized API layer with interceptors",
+  "Strict TypeScript with well-defined types",
+  "Tailwind CSS with theme-based configuration",
+  "Clear separation of concerns (presentation/logic)",
+  "Custom hooks for logic reuse",
+  "Mappers for API-Domain data transformation",
+  "Testability with Vitest + Testing Library",
+  "Professional environment setup (ESLint/Prettier)",
+];
+
+// Detailed folder structure
+const folderStructure = `
+src/
+  app/
+    layouts/
+    providers/
+    routes/
+  assets/
+  common/
+    components/
+    hooks/
+    utils/
+  features/
+    auth/
+      api/
+      components/
+      store/
+    events/
+      api/
+      components/
+      mappers/
+      types/
+      store/
+  config/
+    apiClient.ts
+    constants.ts
+    routes.ts
+  types/
+  lib/
+    api/
+    i18n/
+  stores/
+  styles/
+    base.css
+    theme.css
+`;
+// Additional professional configuration instructions
+const additionalInstructions = `
+1. Set up absolute aliases in tsconfig.json
+2. Use React Query for complex data fetching
+3. Implement Formik + Yup for form management
+4. Configure custom themes in tailwind.config.js
+5. Enforce clear import policies (no relative imports)
+6. Use code generators for components (plop.js)
+7. Implement global error boundaries
+8. Configure loading states and skeletons for async operations
+9. Use react-helmet-async for metadata management
+10. Implement testing strategy: 70% integration, 20% unit, 10% e2e
+11. Set up CI/CD with GitHub Actions
+12. Use compound components for complex UI logic
+13. Implement logging system for dev/prod
+14. Configure bundle analysis with vite-bundle-visualizer
+15. Use dynamic imports for route-based code splitting
+`;
+
+// TypeScript-specific rules
+const typescriptRules = `
+1. Strict types for API responses/requests
+2. Never use 'any' - use unknown with type guards
+3. Separate types for DTOs and domain models
+4. Use utility types (Pick, Omit, Partial) where appropriate
+5. Implement runtime type checking with zod
+6. Global types in .d.ts files
+7. Type validation in mappers
+`;
+
+// Advanced Tailwind configuration
+const tailwindConfig = `
+1. Extend theme with brand colors
+2. Use layers for base styles
+3. Implement tokenized design system
+4. Use official plugins (forms, typography)
+5. Configure purge for production
+6. Custom CSS variables in theme.css
+7. Dark mode with class-based switching
+`;
+
+// State management specific rules
+const stateManagementRules = `
+1. Create stores per domain feature
+2. Use immer for immutable state updates
+3. Implement store hydration for persistence
+4. Use devtools middleware for debugging
+5. Separate async actions into services
+6. Normalize complex state structures
+7. Implement store versioning for migrations
+`;

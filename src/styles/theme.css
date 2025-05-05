@@ -1,0 +1,106 @@
+/**
+ * Variables CSS personalizadas que definen el tema de la aplicación
+ * Se pueden usar con la sintaxis var(--cds-color-primary) en estilos
+ */
+:root {
+  /* Colores del tema - Primarios */
+  --cds-color-primary-50: #eff6ff;
+  --cds-color-primary-100: #dbeafe;
+  --cds-color-primary-200: #bfdbfe;
+  --cds-color-primary-300: #93c5fd;
+  --cds-color-primary-400: #60a5fa;
+  --cds-color-primary-500: #3b82f6;
+  --cds-color-primary-600: #2563eb;
+  --cds-color-primary-700: #1d4ed8;
+  --cds-color-primary-800: #1e40af;
+  --cds-color-primary-900: #1e3a8a;
+  --cds-color-primary-950: #172554;
+
+  /* Colores del tema - Secundarios */
+  --cds-color-secondary-50: #f5f3ff;
+  --cds-color-secondary-100: #ede9fe;
+  --cds-color-secondary-200: #ddd6fe;
+  --cds-color-secondary-300: #c4b5fd;
+  --cds-color-secondary-400: #a78bfa;
+  --cds-color-secondary-500: #8b5cf6;
+  --cds-color-secondary-600: #7c3aed;
+  --cds-color-secondary-700: #6d28d9;
+  --cds-color-secondary-800: #5b21b6;
+  --cds-color-secondary-900: #4c1d95;
+  --cds-color-secondary-950: #2e1065;
+
+  /* Colores del tema - Acentos */
+  --cds-color-accent-50: #fdf2f8;
+  --cds-color-accent-100: #fce7f3;
+  --cds-color-accent-200: #fbcfe8;
+  --cds-color-accent-300: #f9a8d4;
+  --cds-color-accent-400: #f472b6;
+  --cds-color-accent-500: #ec4899;
+  --cds-color-accent-600: #db2777;
+  --cds-color-accent-700: #be185d;
+  --cds-color-accent-800: #9d174d;
+  --cds-color-accent-900: #831843;
+  --cds-color-accent-950: #500724;
+
+  /* Colores del tema - Grises para fondo/texto */
+  --cds-color-gray-50: #f9fafb;
+  --cds-color-gray-100: #f3f4f6;
+  --cds-color-gray-200: #e5e7eb;
+  --cds-color-gray-300: #d1d5db;
+  --cds-color-gray-400: #9ca3af;
+  --cds-color-gray-500: #6b7280;
+  --cds-color-gray-600: #4b5563;
+  --cds-color-gray-700: #374151;
+  --cds-color-gray-800: #1f2937;
+  --cds-color-gray-900: #111827;
+  --cds-color-gray-950: #030712;
+
+  /* Colores de estado */
+  --cds-color-success: #10b981;
+  --cds-color-warning: #f59e0b;
+  --cds-color-error: #ef4444;
+  --cds-color-info: #3b82f6;
+
+  /* Espaciado */
+  --cds-spacing-1: 0.25rem;
+  --cds-spacing-2: 0.5rem;
+  --cds-spacing-3: 0.75rem;
+  --cds-spacing-4: 1rem;
+  --cds-spacing-6: 1.5rem;
+  --cds-spacing-8: 2rem;
+  --cds-spacing-12: 3rem;
+  --cds-spacing-16: 4rem;
+  
+  /* Tipografía */
+  --cds-font-sans: 'Inter', system-ui, sans-serif;
+  --cds-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  /* Tamaño de fuente */
+  --cds-font-size-xs: 0.75rem;
+  --cds-font-size-sm: 0.875rem;
+  --cds-font-size-base: 1rem;
+  --cds-font-size-lg: 1.125rem;
+  --cds-font-size-xl: 1.25rem;
+  --cds-font-size-2xl: 1.5rem;
+  --cds-font-size-3xl: 1.875rem;
+  --cds-font-size-4xl: 2.25rem;
+  
+  /* Bordes */
+  --cds-border-radius-sm: 0.25rem;
+  --cds-border-radius-md: 0.375rem;
+  --cds-border-radius-lg: 0.5rem;
+  --cds-border-radius-xl: 0.75rem;
+  --cds-border-radius-2xl: 1rem;
+  --cds-border-radius-full: 9999px;
+  
+  /* Transiciones */
+  --cds-transition-fast: 150ms;
+  --cds-transition-normal: 250ms;
+  --cds-transition-slow: 350ms;
+  
+  /* Sombras */
+  --cds-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --cds-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --cds-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --cds-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+} 
