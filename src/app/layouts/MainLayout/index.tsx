@@ -85,6 +85,11 @@ const MainLayout: React.FC = () => {
                   Usuarios
                 </a>
               </li>
+              <li>
+                <a href={ROUTES.demo} className={styles.navLink}>
+                  Demo
+                </a>
+              </li>
             </ul>
           </nav>
 
