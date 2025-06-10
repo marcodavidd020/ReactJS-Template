@@ -7,6 +7,7 @@ import useAuthStore from "../../features/auth/store/authStore";
 import ProfilePage from "../../features/users/pages/ProfilePage";
 import AuthChecker from "../../features/auth/components/AuthChecker";
 import UsersPage from "../../features/users/pages/UsersPage";
+import { DemoPage } from "../../features/demo";
 
 /**
  * Componente para rutas protegidas que requieren autenticación
@@ -89,6 +90,8 @@ const AppRouter: React.FC = () => {
           <Route path={privateRoutes.profile.path} element={<ProfilePage />} />
           {/* Gestionar usuarios */}
           <Route path={privateRoutes.users.path} element={<UsersPage />} />
+          {/* Página de demostración de componentes */}
+          <Route path={privateRoutes.demo.path} element={<DemoPage />} />
           {/* Aquí se añadirán más rutas privadas */}
         </Route>
 
