@@ -61,6 +61,11 @@ export const privateRoutes: Record<string, RouteConfig> = {
     title: "Usuarios",
     protected: true,
   },
+  demo: {
+    path: ROUTES.demo,
+    title: "Demo",
+    protected: true,
+  },
 };
 
 // Todas las rutas combinadas
