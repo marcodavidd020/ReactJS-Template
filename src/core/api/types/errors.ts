@@ -3,6 +3,7 @@
  */
 
 import { HttpStatus } from "../config";
+import { ApiErrorDetails, DataObject } from "../../types/common";
 
 /**
  * Clase base para errores de API
@@ -15,7 +16,7 @@ export class ApiError extends Error {
   userMessage: string;
 
   /** Detalles técnicos del error */
-  details?: unknown;
+  details?: ApiErrorDetails | DataObject;
 
   /** Código de error para identificación programática */
   errorCode: string;
@@ -54,7 +55,7 @@ export class NetworkError extends ApiError {
 export class ServerError extends ApiError {
   constructor(
     message: string = "Error en el servidor. Por favor, inténtalo más tarde.",
-    details?: unknown
+    details?: DataObject
   ) {
     super(message, HttpStatus.INTERNAL_SERVER_ERROR, "server_error");
     this.details = details;
@@ -68,7 +69,7 @@ export class ServerError extends ApiError {
 export class AuthenticationError extends ApiError {
   constructor(
     message: string = "Sesión expirada. Por favor, inicia sesión nuevamente.",
-    details?: unknown
+    details?: ApiErrorDetails
   ) {
     super(message, HttpStatus.UNAUTHORIZED, "authentication_error");
     this.details = details;
@@ -82,7 +83,7 @@ export class AuthenticationError extends ApiError {
 export class AuthorizationError extends ApiError {
   constructor(
     message: string = "No tienes permisos para realizar esta acción.",
-    details?: unknown
+    details?: ApiErrorDetails
   ) {
     super(message, HttpStatus.FORBIDDEN, "authorization_error");
     this.details = details;
@@ -111,7 +112,7 @@ export class ValidationError extends ApiError {
  * Error de recurso no encontrado
  */
 export class NotFoundError extends ApiError {
-  constructor(resource: string = "recurso", details?: unknown) {
+  constructor(resource: string = "recurso", details?: ApiErrorDetails) {
     const message = `El ${resource} solicitado no fue encontrado.`;
     super(message, HttpStatus.NOT_FOUND, "not_found_error");
     this.details = details;
@@ -125,7 +126,7 @@ export class NotFoundError extends ApiError {
 export class ConflictError extends ApiError {
   constructor(
     message: string = "Hay un conflicto con el recurso actual.",
-    details?: unknown
+    details?: ApiErrorDetails
   ) {
     super(message, HttpStatus.CONFLICT, "conflict_error");
     this.details = details;
@@ -151,23 +152,23 @@ export class RateLimitError extends ApiError {
 export function createErrorFromStatus(
   statusCode: number,
   message?: string,
-  details?: unknown
+  details?: ApiErrorDetails | DataObject
 ): ApiError {
   switch (statusCode) {
     case HttpStatus.BAD_REQUEST:
       return new ValidationError(message || "Solicitud incorrecta");
 
     case HttpStatus.UNAUTHORIZED:
-      return new AuthenticationError(message);
+      return new AuthenticationError(message, details as ApiErrorDetails);
 
     case HttpStatus.FORBIDDEN:
-      return new AuthorizationError(message);
+      return new AuthorizationError(message, details as ApiErrorDetails);
 
     case HttpStatus.NOT_FOUND:
-      return new NotFoundError(message || "recurso");
+      return new NotFoundError(message || "recurso", details as ApiErrorDetails);
 
     case HttpStatus.CONFLICT:
-      return new ConflictError(message, details);
+      return new ConflictError(message, details as ApiErrorDetails);
 
     case HttpStatus.UNPROCESSABLE_ENTITY:
       return new ValidationError(message);
@@ -179,7 +180,7 @@ export function createErrorFromStatus(
     case HttpStatus.BAD_GATEWAY:
     case HttpStatus.SERVICE_UNAVAILABLE:
     case HttpStatus.GATEWAY_TIMEOUT:
-      return new ServerError(message, details);
+      return new ServerError(message, details as DataObject);
 
     default:
       return new ApiError(

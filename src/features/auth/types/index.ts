@@ -2,6 +2,8 @@
  * Tipos para autenticación
  */
 
+import { Address } from "../../../core/types/common";
+
 // Credenciales de login
 export interface LoginCredentials {
   email: string;
@@ -27,7 +29,7 @@ export interface User {
   isActive: boolean;
   avatar?: string;
   roles: string[];
-  addresses?: unknown[];
+  addresses: Address[];
   phoneNumber?: string | null;
   createdAt: string;
   updatedAt: string;

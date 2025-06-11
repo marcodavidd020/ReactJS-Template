@@ -7,18 +7,25 @@ import {
   createErrorFromStatus
 } from "../../core/api/types/errors";
 import { handleError as coreHandleError } from "../../core/utils/errors/errorHandler";
+import { PrimitiveValue } from "../../core/types/common";
 
 /**
- * Tipo para errores API estandarizados
+ * Tipo para errores API estandarizados (legacy)
  * @deprecated Use ApiError from core/api/types/errors instead
  */
-export type ApiErrorPrimitive = string | number | boolean | null;
-export type ApiErrorDetails = Record<string, ApiErrorPrimitive | ApiErrorDetails | ApiErrorPrimitive[]>;
+export type ApiErrorPrimitive = PrimitiveValue;
+
+export interface LegacyApiErrorDetails {
+  message?: string;
+  field?: string;
+  code?: string;
+  [key: string]: PrimitiveValue | PrimitiveValue[] | undefined;
+}
 
 export interface ApiError {
   message: string;
   statusCode?: number;
-  errorDetails?: ApiErrorDetails;
+  errorDetails?: LegacyApiErrorDetails;
 }
 
 /**
@@ -28,7 +35,7 @@ export interface ApiError {
  * @param context Contexto donde ocurrió el error para mejor identificación
  * @returns Error formateado
  */
-export type ErrorInput = Error | AxiosError | string | ApiErrorDetails | null;
+export type ErrorInput = Error | AxiosError | string | LegacyApiErrorDetails | null;
 
 export const formatApiError = (
   error: ErrorInput,
@@ -39,7 +46,7 @@ export const formatApiError = (
   // Si es un error de Axios, extraer la información relevante
   if (error instanceof AxiosError) {
     const status = error.response?.status;
-    const responseData = error.response?.data as ApiErrorDetails;
+    const responseData = error.response?.data as LegacyApiErrorDetails;
     const apiErrorMessage = responseData?.message || error.message;
 
     console.error(`Error API (${context}):`, {
@@ -51,7 +58,7 @@ export const formatApiError = (
     return {
       message: apiErrorMessage,
       statusCode: status,
-      errorDetails: error.response?.data,
+      errorDetails: error.response?.data as LegacyApiErrorDetails,
     };
   }
 
@@ -63,7 +70,9 @@ export const formatApiError = (
   return {
     message: errorMessage,
     errorDetails:
-      typeof error === "object" && error !== null ? (error as ApiErrorDetails) : { info: errorMessage },
+      typeof error === "object" && error !== null 
+        ? (error as LegacyApiErrorDetails) 
+        : { info: errorMessage },
   };
 };
 

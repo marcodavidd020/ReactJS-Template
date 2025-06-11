@@ -5,19 +5,19 @@
  */
 
 import { z } from "zod";
-import { UserUpdateData, CreateUserData } from "../../../features/users/types/userTypes";
+import { UserUpdateData, CreateUserData, UpdateProfileRequest } from "../../../features/users/types/userTypes";
 import { validateWithSchema, email, name, password } from "./zodValidation";
 
-// Esquema de perfil de usuario
+// Esquema de perfil de usuario para actualización
 export const userProfileSchema = z.object({
-  firstName: name,
-  lastName: name,
-  email,
+  firstName: name.optional(),
+  lastName: name.optional(),
   phoneNumber: z.string().optional().nullable(),
   bio: z
     .string()
     .max(500, "La biografía no puede exceder los 500 caracteres")
     .optional(),
+  avatar: z.string().url("URL inválida").optional(),
   socialLinks: z
     .object({
       github: z.string().url("URL inválida").optional().or(z.literal("")),
@@ -26,6 +26,7 @@ export const userProfileSchema = z.object({
       website: z.string().url("URL inválida").optional().or(z.literal("")),
     })
     .optional(),
+  skills: z.array(z.string()).optional(),
 });
 
 // Esquema para actualización de usuario
@@ -50,7 +51,7 @@ export const userCreateSchema = z.object({
  * Valida actualización de perfil
  * @param data Datos de perfil
  */
-export function validateUserProfile(data: unknown) {
+export function validateUserProfile(data: UpdateProfileRequest) {
   return validateWithSchema(userProfileSchema, data);
 }
 
