@@ -2,6 +2,8 @@
  * Tipos para respuestas de la API
  */
 
+import { Address, SocialLinks } from "../../../core/types/common";
+
 // Respuesta genérica de la API
 export interface ApiResponse<T> {
   success: boolean;
@@ -11,10 +13,10 @@ export interface ApiResponse<T> {
 }
 
 // Respuesta de perfil de usuario
-export interface UserProfileResponse extends ApiResponse<UserProfileDTO> {}
+export type UserProfileResponse = ApiResponse<UserProfileDTO>;
 
 // Respuesta de lista de usuarios
-export interface UsersListResponse extends ApiResponse<UserProfileDTO[]> {}
+export type UsersListResponse = ApiResponse<UserProfileDTO[]>;
 
 // Respuesta de eliminación o acciones booleanas
 export interface ActionResponse {
@@ -38,17 +40,12 @@ export interface UserProfileDTO {
   avatar?: string;
   bio?: string;
   roles: string[];
-  addresses?: any[];
+  addresses: Address[];
   phoneNumber?: string | null;
   createdAt: string;
   updatedAt: string;
-  socialLinks?: {
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-    website?: string;
-  };
-  skills?: string[];
+  socialLinks: SocialLinks;
+  skills: string[];
 }
 
 /**
@@ -66,16 +63,11 @@ export interface User {
   avatar?: string;
   bio?: string;
   roles: string[];
-  addresses?: any[];
+  addresses: Address[];
   phoneNumber?: string | null;
   createdAt: Date;
   updatedAt: Date;
-  socialLinks: {
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-    website?: string;
-  };
+  socialLinks: SocialLinks;
   skills: string[];
 }
 
@@ -147,12 +139,7 @@ export interface UpdateProfileRequest {
   bio?: string;
   avatar?: string;
   phoneNumber?: string;
-  socialLinks?: {
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-    website?: string;
-  };
+  socialLinks?: SocialLinks;
   skills?: string[];
 }
 

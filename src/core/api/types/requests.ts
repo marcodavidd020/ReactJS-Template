@@ -2,6 +2,8 @@
  * Tipos genéricos para peticiones a la API
  */
 
+import { PrimitiveValue, DataObject } from "../../types/common";
+
 /**
  * Interfaz base para parámetros de paginación
  */
@@ -29,16 +31,24 @@ export interface SearchParams extends PaginationParams, SortParams {
  * Parámetros para filtrado de datos
  */
 export interface FilterParams {
-  [key: string]: string | number | boolean | string[] | undefined;
+  [key: string]: PrimitiveValue | PrimitiveValue[] | undefined;
 }
 
 /**
  * Parámetros completos para listar recursos
  */
-export interface ListParams
-  extends PaginationParams,
-    SortParams,
-    FilterParams {}
+export interface ListParams extends FilterParams {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortDirection?: "asc" | "desc";
+  query?: string;
+}
+
+/**
+ * Función de transformación de respuesta
+ */
+export type ResponseTransformer<T = DataObject, R = DataObject> = (data: T) => R;
 
 /**
  * Opciones de configuración para peticiones HTTP
@@ -72,7 +82,7 @@ export interface RequestOptions {
   /**
    * Funciones de transformación para la respuesta
    */
-  transformResponse?: ((data: any) => any)[];
+  transformResponse?: ResponseTransformer[];
 
   /**
    * Opciones de caché
@@ -93,4 +103,27 @@ export interface RequestOptions {
      */
     forceRefresh?: boolean;
   };
+}
+
+/**
+ * Datos de formulario para subida de archivos
+ */
+export interface FileUploadData {
+  file: File;
+  fileName?: string;
+  folder?: string;
+  metadata?: DataObject;
+}
+
+/**
+ * Parámetros para operaciones batch
+ */
+export interface BatchOperationParams<T = DataObject> {
+  operations: Array<{
+    method: 'create' | 'update' | 'delete';
+    data: T;
+    id?: string;
+  }>;
+  validateAll?: boolean;
+  stopOnError?: boolean;
 }

@@ -101,7 +101,7 @@ export const authResponseInterceptor = async (
 
     // Reintentar la petición original con el nuevo token
     return retryRequest(config);
-  } catch (refreshError) {
+  } catch (_refreshError) {
     // Error al refrescar el token, limpiar datos de autenticación
     authStorage.clearAuthData();
 

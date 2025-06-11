@@ -2,6 +2,8 @@
  * Tipos de datos para la autenticación
  */
 
+import { Address, SocialLinks } from "../types/common";
+
 /**
  * Credenciales para iniciar sesión
  */
@@ -76,14 +78,9 @@ export interface User {
 export interface UserProfile extends User {
   phoneNumber?: string;
   bio?: string;
-  addresses?: any[];
-  socialLinks?: {
-    github?: string;
-    linkedin?: string;
-    twitter?: string;
-    website?: string;
-  };
-  skills?: string[];
+  addresses: Address[];
+  socialLinks: SocialLinks;
+  skills: string[];
 }
 
 /**

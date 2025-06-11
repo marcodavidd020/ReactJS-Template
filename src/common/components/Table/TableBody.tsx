@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext, useEffect } from "react";
-import { TableContext, TableContextProps } from "./TableContext";
+import { TableContext, TableContextProps } from "./context";
 
 interface TableBodyProps {
   children?: ReactNode;

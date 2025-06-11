@@ -8,6 +8,8 @@ export * from "./responses";
 // Exportar tipos de solicitudes
 export * from "./requests";
 
+import { AxiosRequestConfig } from 'axios';
+
 // Exportar tipos de errores
 export * from "./errors";
 
@@ -22,7 +24,7 @@ export interface IHttpClient {
    * @param url Ruta del recurso
    * @param config Configuración opcional
    */
-  get<T>(url: string, config?: any): Promise<T>;
+  get<T>(url: string, config?: AxiosRequestConfig): Promise<T>;
 
   /**
    * Realiza una solicitud POST
@@ -30,7 +32,11 @@ export interface IHttpClient {
    * @param data Datos a enviar
    * @param config Configuración opcional
    */
-  post<T>(url: string, data?: any, config?: any): Promise<T>;
+  post<T>(
+    url: string,
+    data?: object,
+    config?: AxiosRequestConfig
+  ): Promise<T>;
 
   /**
    * Realiza una solicitud PUT
@@ -38,14 +44,18 @@ export interface IHttpClient {
    * @param data Datos a enviar
    * @param config Configuración opcional
    */
-  put<T>(url: string, data?: any, config?: any): Promise<T>;
+  put<T>(
+    url: string,
+    data?: object,
+    config?: AxiosRequestConfig
+  ): Promise<T>;
 
   /**
    * Realiza una solicitud DELETE
    * @param url Ruta del recurso
    * @param config Configuración opcional
    */
-  delete<T>(url: string, config?: any): Promise<T>;
+  delete<T>(url: string, config?: AxiosRequestConfig): Promise<T>;
 
   /**
    * Realiza una solicitud PATCH
@@ -53,7 +63,11 @@ export interface IHttpClient {
    * @param data Datos a enviar
    * @param config Configuración opcional
    */
-  patch<T>(url: string, data?: any, config?: any): Promise<T>;
+  patch<T>(
+    url: string,
+    data?: object,
+    config?: AxiosRequestConfig
+  ): Promise<T>;
 }
 
 /**

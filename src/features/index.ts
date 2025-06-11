@@ -11,4 +11,7 @@ export * from "./auth";
 // Exportar característica de usuarios
 export * from "./users";
 
+// Exportar página de demostración
+export * from "./demo";
+
 // Agregar aquí nuevas características a medida que se implementen

@@ -7,15 +7,25 @@ import {
   createErrorFromStatus
 } from "../../core/api/types/errors";
 import { handleError as coreHandleError } from "../../core/utils/errors/errorHandler";
+import { PrimitiveValue } from "../../core/types/common";
 
 /**
- * Tipo para errores API estandarizados
+ * Tipo para errores API estandarizados (legacy)
  * @deprecated Use ApiError from core/api/types/errors instead
  */
+export type ApiErrorPrimitive = PrimitiveValue;
+
+export interface LegacyApiErrorDetails {
+  message?: string;
+  field?: string;
+  code?: string;
+  [key: string]: PrimitiveValue | PrimitiveValue[] | undefined;
+}
+
 export interface ApiError {
   message: string;
   statusCode?: number;
-  errorDetails?: unknown;
+  errorDetails?: LegacyApiErrorDetails;
 }
 
 /**
@@ -25,13 +35,18 @@ export interface ApiError {
  * @param context Contexto donde ocurrió el error para mejor identificación
  * @returns Error formateado
  */
-export const formatApiError = (error: unknown, context: string): ApiError => {
+export type ErrorInput = Error | AxiosError | string | LegacyApiErrorDetails | null;
+
+export const formatApiError = (
+  error: ErrorInput,
+  context: string
+): ApiError => {
   console.warn('formatApiError is deprecated, use handleError from core/utils/errors/errorHandler instead');
   
   // Si es un error de Axios, extraer la información relevante
   if (error instanceof AxiosError) {
     const status = error.response?.status;
-    const responseData = error.response?.data as Record<string, any>;
+    const responseData = error.response?.data as LegacyApiErrorDetails;
     const apiErrorMessage = responseData?.message || error.message;
 
     console.error(`Error API (${context}):`, {
@@ -43,18 +58,21 @@ export const formatApiError = (error: unknown, context: string): ApiError => {
     return {
       message: apiErrorMessage,
       statusCode: status,
-      errorDetails: error.response?.data,
+      errorDetails: error.response?.data as LegacyApiErrorDetails,
     };
   }
 
   // Si es otro tipo de error
   const errorMessage =
-    error instanceof Error ? error.message : "Error desconocido";
+    error instanceof Error ? error.message : String(error ?? "Error desconocido");
   console.error(`Error (${context}):`, errorMessage);
 
   return {
     message: errorMessage,
-    errorDetails: error,
+    errorDetails:
+      typeof error === "object" && error !== null 
+        ? (error as LegacyApiErrorDetails) 
+        : { info: errorMessage },
   };
 };
 
@@ -96,7 +114,7 @@ export const getErrorMessageByStatus = (statusCode?: number): string => {
  * @returns Mensaje de error formateado para mostrar al usuario
  */
 export const handleComponentError = (
-  error: unknown,
+  error: ErrorInput,
   context: string,
   fallbackMessage = "Ha ocurrido un error inesperado"
 ): string => {

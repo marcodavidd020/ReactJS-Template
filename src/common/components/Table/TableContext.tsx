@@ -1,21 +1,5 @@
-import React, { createContext, ReactNode, useState, useCallback } from "react";
-
-export interface TableContextProps {
-  striped: boolean;
-  hover: boolean;
-  isEven: boolean;
-  incrementRow: () => void;
-  resetRowCount: () => void;
-}
-
-// Valor por defecto del contexto
-export const TableContext = createContext<TableContextProps>({
-  striped: false,
-  hover: false,
-  isEven: false,
-  incrementRow: () => {},
-  resetRowCount: () => {},
-});
+import React, { ReactNode, useState, useCallback } from "react";
+import { TableContext } from "./context";
 
 interface TableProviderProps {
   children: ReactNode;

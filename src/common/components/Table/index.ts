@@ -6,7 +6,8 @@ import TableCell from "./TableCell";
 import TableHeadCell from "./TableHeadCell";
 import TableEmpty from "./TableEmpty";
 import TableActions from "./TableActions";
-import { TableContext, TableProvider } from "./TableContext";
+import { TableContext, TableContextProps } from "./context";
+import { TableProvider } from "./TableContext";
 
 export {
   Table,
@@ -20,5 +21,7 @@ export {
   TableContext,
   TableProvider
 };
+
+export type { TableContextProps };
 
 export default Table;

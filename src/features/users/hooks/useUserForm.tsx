@@ -87,7 +87,7 @@ export const useUserForm = (type: FormType, initialData?: UserProfile) => {
 
       setIsSubmitting(false);
       return true; // Éxito
-    } catch (error) {
+    } catch (_error) {
       setIsSubmitting(false);
       return false; // Error
     }

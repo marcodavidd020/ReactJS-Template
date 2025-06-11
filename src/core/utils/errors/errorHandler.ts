@@ -12,6 +12,7 @@ import {
   NetworkError,
   createErrorFromStatus,
 } from "../../api/types/errors";
+import { DataObject } from "../../types/common";
 
 interface ErrorHandlerOptions {
   /** Si se debe mostrar una notificación al usuario */
@@ -25,6 +26,28 @@ interface ErrorHandlerOptions {
 
   /** Mensaje personalizado para mostrar al usuario */
   userMessage?: string;
+}
+
+/**
+ * Datos de respuesta de error de axios
+ */
+interface AxiosErrorResponse {
+  status?: number;
+  data?: {
+    message?: string;
+    error?: string;
+    [key: string]: unknown;
+  };
+  statusText?: string;
+}
+
+/**
+ * Error de axios tipado
+ */
+interface AxiosError {
+  response?: AxiosErrorResponse;
+  request?: unknown;
+  message?: string;
 }
 
 /**
@@ -71,21 +94,14 @@ export function formatError(error: unknown): ApiError {
 
   // Si es un error de Axios o similar con respuesta
   if (error && typeof error === "object" && "response" in error) {
-    const axiosError = error as {
-      response?: {
-        status?: number;
-        data?: any;
-        statusText?: string;
-      };
-      message?: string;
-      request?: any;
-    };
+    const axiosError = error as AxiosError;
 
     // Error con respuesta del servidor
     if (axiosError.response) {
       const status = axiosError.response.status || 500;
       const serverMessage =
         axiosError.response.data?.message ||
+        axiosError.response.data?.error ||
         axiosError.response.statusText ||
         axiosError.message ||
         "Error del servidor";
@@ -93,7 +109,7 @@ export function formatError(error: unknown): ApiError {
       return createErrorFromStatus(
         status,
         serverMessage,
-        axiosError.response.data
+        axiosError.response.data as DataObject
       );
     }
 

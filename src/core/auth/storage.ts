@@ -3,6 +3,7 @@
  */
 
 import { IAuthHandler } from "../api/types";
+import { DataObject } from "../types/common";
 
 /**
  * Claves para localStorage
@@ -13,6 +14,18 @@ export const AUTH_STORAGE_KEYS = {
   EXPIRATION_TIME: "cds_token_expiration",
   USER_DATA: "cds_user_data",
 };
+
+/**
+ * Datos de usuario que se pueden almacenar
+ */
+export interface StoredUserData extends DataObject {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  roles: string[];
+  [key: string]: string | number | boolean | null | string[];
+}
 
 /**
  * Implementación de autenticación basada en localStorage
@@ -86,7 +99,7 @@ export class LocalStorageAuthHandler implements IAuthHandler {
   /**
    * Almacena los datos del usuario actual
    */
-  saveUserData(userData: any): void {
+  saveUserData<T extends StoredUserData>(userData: T): void {
     if (userData) {
       localStorage.setItem(
         AUTH_STORAGE_KEYS.USER_DATA,
@@ -98,7 +111,7 @@ export class LocalStorageAuthHandler implements IAuthHandler {
   /**
    * Obtiene los datos del usuario actual
    */
-  getUserData<T>(): T | null {
+  getUserData<T extends StoredUserData>(): T | null {
     const userData = localStorage.getItem(AUTH_STORAGE_KEYS.USER_DATA);
 
     if (!userData) {
