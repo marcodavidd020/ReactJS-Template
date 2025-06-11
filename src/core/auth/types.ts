@@ -76,7 +76,7 @@ export interface User {
 export interface UserProfile extends User {
   phoneNumber?: string;
   bio?: string;
-  addresses?: any[];
+  addresses?: unknown[];
   socialLinks?: {
     github?: string;
     linkedin?: string;

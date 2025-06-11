@@ -43,8 +43,22 @@ export interface IAuthService {
   verifyAuth(): Promise<{ isAuthenticated: boolean; user?: UserProfile }>;
 }
 
+// Tipo para el perfil de usuario proveniente de la API
+interface ApiUserProfile {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName?: string;
+  avatar?: string;
+  roles: string[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Mapper para convertir el perfil de usuario del API al modelo interno UserProfile
-const mapUserProfileFromApi = (apiData: any): UserProfile => {
+const mapUserProfileFromApi = (apiData: ApiUserProfile): UserProfile => {
   return {
     id: apiData.id,
     email: apiData.email,
@@ -294,7 +308,7 @@ class AuthService implements IAuthService {
         // Token expirado, intentar refresh
         try {
           await this.refreshToken();
-        } catch (error) {
+        } catch (_error) {
           // Error en refresh, usuario no autenticado
           return { isAuthenticated: false };
         }

@@ -72,7 +72,7 @@ export interface RequestOptions {
   /**
    * Funciones de transformación para la respuesta
    */
-  transformResponse?: ((data: any) => any)[];
+  transformResponse?: ((data: unknown) => unknown)[];
 
   /**
    * Opciones de caché

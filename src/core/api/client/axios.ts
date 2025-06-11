@@ -36,7 +36,7 @@ export class AxiosHttpClient implements IHttpClient {
    * @param config Configuración adicional
    * @returns Datos de la respuesta
    */
-  async get<T>(url: string, config?: any): Promise<T> {
+  async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.instance.get<T, AxiosResponse<T>>(url, config);
     return response.data;
   }
@@ -48,8 +48,11 @@ export class AxiosHttpClient implements IHttpClient {
    * @param config Configuración adicional
    * @returns Datos de la respuesta
    */
-  async post<T>(url: string, data?: any, config?: any): Promise<T> {
-    console.log("post", url, data, config);
+  async post<T>(
+    url: string,
+    data?: object,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await this.instance.post<T, AxiosResponse<T>>(
       url,
       data,
@@ -65,7 +68,11 @@ export class AxiosHttpClient implements IHttpClient {
    * @param config Configuración adicional
    * @returns Datos de la respuesta
    */
-  async put<T>(url: string, data?: any, config?: any): Promise<T> {
+  async put<T>(
+    url: string,
+    data?: object,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await this.instance.put<T, AxiosResponse<T>>(
       url,
       data,
@@ -80,7 +87,7 @@ export class AxiosHttpClient implements IHttpClient {
    * @param config Configuración adicional
    * @returns Datos de la respuesta
    */
-  async delete<T>(url: string, config?: any): Promise<T> {
+  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
     const response = await this.instance.delete<T, AxiosResponse<T>>(
       url,
       config
@@ -95,7 +102,11 @@ export class AxiosHttpClient implements IHttpClient {
    * @param config Configuración adicional
    * @returns Datos de la respuesta
    */
-  async patch<T>(url: string, data?: any, config?: any): Promise<T> {
+  async patch<T>(
+    url: string,
+    data?: object,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await this.instance.patch<T, AxiosResponse<T>>(
       url,
       data,

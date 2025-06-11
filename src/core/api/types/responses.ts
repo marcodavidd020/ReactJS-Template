@@ -36,7 +36,7 @@ export interface ApiErrorResponse {
   message: string;
   error: {
     code: string;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
   };
   timestamp: string;
 }
@@ -53,15 +53,14 @@ export type EmptyResponse = ApiResponse<null>;
 /**
  * Respuesta de acción simplificada (éxito/fallo)
  */
-export interface ActionResponse extends ApiResponse<{ success: boolean }> {}
+export type ActionResponse = ApiResponse<{ success: boolean }>;
 
 /**
  * Respuesta con token para autenticación
  */
-export interface TokenResponse
-  extends ApiResponse<{
-    accessToken: string;
-    refreshToken: string;
-    expiresIn: number;
-    tokenType: string;
-  }> {}
+export type TokenResponse = ApiResponse<{
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+  tokenType: string;
+}>;

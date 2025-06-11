@@ -11,10 +11,10 @@ export interface ApiResponse<T> {
 }
 
 // Respuesta de perfil de usuario
-export interface UserProfileResponse extends ApiResponse<UserProfileDTO> {}
+export type UserProfileResponse = ApiResponse<UserProfileDTO>;
 
 // Respuesta de lista de usuarios
-export interface UsersListResponse extends ApiResponse<UserProfileDTO[]> {}
+export type UsersListResponse = ApiResponse<UserProfileDTO[]>;
 
 // Respuesta de eliminación o acciones booleanas
 export interface ActionResponse {
@@ -38,7 +38,7 @@ export interface UserProfileDTO {
   avatar?: string;
   bio?: string;
   roles: string[];
-  addresses?: any[];
+  addresses?: unknown[];
   phoneNumber?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -66,7 +66,7 @@ export interface User {
   avatar?: string;
   bio?: string;
   roles: string[];
-  addresses?: any[];
+  addresses?: unknown[];
   phoneNumber?: string | null;
   createdAt: Date;
   updatedAt: Date;

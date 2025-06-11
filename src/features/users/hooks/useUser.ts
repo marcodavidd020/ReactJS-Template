@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import useUsersStore from "../store/usersStore";
-import { UserProfile } from "../types/userTypes";
+import { UserProfile, UserUpdateData } from "../types/userTypes";
 
 /**
  * Hook para acceder a los datos y funcionalidades de usuario
@@ -64,7 +64,8 @@ export const useUser = () => {
     fetchUsers,
     fetchUserById,
     getProfile,
-    updateProfile: (data: any) => updateUser(currentUser?.id || "", data),
+    updateProfile: (data: UserUpdateData) =>
+      updateUser(currentUser?.id || "", data),
     clearError,
     findUserById,
     searchUsers,
