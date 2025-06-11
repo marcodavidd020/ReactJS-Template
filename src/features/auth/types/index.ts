@@ -27,7 +27,7 @@ export interface User {
   isActive: boolean;
   avatar?: string;
   roles: string[];
-  addresses?: any[];
+  addresses?: unknown[];
   phoneNumber?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -55,10 +55,10 @@ export interface ApiResponse<T> {
 }
 
 // Respuesta de login
-export interface LoginResponse extends ApiResponse<AuthTokens> {}
+export type LoginResponse = ApiResponse<AuthTokens>;
 
 // Respuesta del perfil
-export interface ProfileResponse extends ApiResponse<User> {}
+export type ProfileResponse = ApiResponse<User>;
 
 // Estado de autenticación
 export interface AuthState {

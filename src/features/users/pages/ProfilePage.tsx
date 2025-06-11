@@ -8,6 +8,7 @@ import ProfileForm from "../components/ProfileForm";
 import ProfileInfo from "../components/ProfileInfo";
 import ProfileSidebar from "../components/ProfileSidebar";
 import { useUser } from "../hooks/useUser";
+import { UpdateProfileRequest } from "../types/userTypes";
 
 /**
  * Página de perfil de usuario que permite visualizar y editar información personal
@@ -16,7 +17,7 @@ const ProfilePage: React.FC = () => {
   const { currentUser, isLoading, error, updateProfile } = useUser();
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleSubmit = async (profileData: any) => {
+  const handleSubmit = async (profileData: UpdateProfileRequest) => {
     await updateProfile(profileData);
     setIsEditing(false);
   };

@@ -46,7 +46,7 @@ export const name = z
  * @throws ValidationError si los datos no cumplen con el esquema
  */
 export function validateWithSchema<T, U>(
-  schema: z.ZodSchema<T, any, U>,
+  schema: z.ZodSchema<T, z.ZodTypeDef, U>,
   data: U
 ): T {
   try {

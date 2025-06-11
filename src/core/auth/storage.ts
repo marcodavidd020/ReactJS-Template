@@ -86,7 +86,7 @@ export class LocalStorageAuthHandler implements IAuthHandler {
   /**
    * Almacena los datos del usuario actual
    */
-  saveUserData(userData: any): void {
+  saveUserData<T extends Record<string, unknown>>(userData: T): void {
     if (userData) {
       localStorage.setItem(
         AUTH_STORAGE_KEYS.USER_DATA,

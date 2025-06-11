@@ -74,11 +74,11 @@ export function formatError(error: unknown): ApiError {
     const axiosError = error as {
       response?: {
         status?: number;
-        data?: any;
+        data?: unknown;
         statusText?: string;
       };
       message?: string;
-      request?: any;
+      request?: unknown;
     };
 
     // Error con respuesta del servidor
